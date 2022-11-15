@@ -6,7 +6,7 @@
     android:background="@drawable/half_round"
     android:layout_height="match_parent"
 
-    tools:context="com.annmonstar.androidauctionapp.HomeActivity">
+    tools:context="com.annmonstar.androidauctionapp.ui.HomeActivity">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"

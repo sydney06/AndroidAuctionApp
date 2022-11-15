@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-import com.annmonstar.androidauctionapp.ProductInfoActivity;
+import com.annmonstar.androidauctionapp.ui.ProductInfoActivity;
 import com.annmonstar.androidauctionapp.R;
 
 public class pInfo_AllImageView extends RecyclerView.Adapter<pInfo_AllImageView.Viewholder> {

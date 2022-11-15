@@ -1,4 +1,4 @@
-package com.annmonstar.androidauctionapp;
+package com.annmonstar.androidauctionapp.ui.utils;
 
 
 import android.annotation.SuppressLint;

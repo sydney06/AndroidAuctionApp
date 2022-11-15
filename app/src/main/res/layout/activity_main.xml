@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:background="#fff"
     android:layout_height="match_parent"
-    tools:context="com.annmonstar.androidauctionapp.MainActivity">
+    tools:context="com.annmonstar.androidauctionapp.ui.MainActivity">
 
     <ImageView
         android:layout_width="match_parent"

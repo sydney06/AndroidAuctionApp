@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.annmonstar.androidauctionapp.addProductforBid">
+
+    tools:context="com.annmonstar.androidauctionapp.ui.addProductforBid">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -139,6 +140,7 @@
                 android:layout_marginEnd="20dp"
                 android:text="Your ad campaign will run till the number of days you will provide above. Maximum days to run a campaign is 7 days"/>
 
+            <!--Image View for showing image chosen from gallery-->
 
           <androidx.recyclerview.widget.RecyclerView
               android:layout_width="match_parent"

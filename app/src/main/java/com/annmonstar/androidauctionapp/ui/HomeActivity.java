@@ -1,4 +1,4 @@
-package com.annmonstar.androidauctionapp;
+package com.annmonstar.androidauctionapp.ui;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.annmonstar.androidauctionapp.R;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -119,7 +120,6 @@ public class HomeActivity extends AppCompatActivity {
                                 int result = todayDate.compareTo(expireDate);
 
                                 if (result >= 0){
-
                                     HashMap<String,Object> hashMap = new HashMap();
                                     hashMap.put("status","stop");
                                     reference.child(products.getName()).updateChildren(hashMap);
@@ -153,7 +153,6 @@ public class HomeActivity extends AppCompatActivity {
                 if (snapshot.exists()){
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()){
                        BiddingModal biddingModal = dataSnapshot.getValue(BiddingModal.class);
-
                         assert biddingModal != null;
                         int bid = Integer.parseInt(biddingModal.getBid());
                        if (bid>max){

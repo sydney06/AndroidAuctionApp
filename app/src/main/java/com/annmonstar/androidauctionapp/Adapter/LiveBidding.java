@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.annmonstar.androidauctionapp.Models.BiddingModal;
-import com.annmonstar.androidauctionapp.ProductInfoActivity;
+import com.annmonstar.androidauctionapp.ui.ProductInfoActivity;
 import com.annmonstar.androidauctionapp.R;
 
 public class LiveBidding extends RecyclerView.Adapter<LiveBidding.Viewholder> {

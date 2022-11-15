@@ -1,4 +1,4 @@
-package com.annmonstar.androidauctionapp;
+package com.annmonstar.androidauctionapp.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,6 +6,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+
+import com.annmonstar.androidauctionapp.R;
+import com.annmonstar.androidauctionapp.ui.authentication.LoginActivity;
+import com.annmonstar.androidauctionapp.ui.authentication.RegisterActivity;
 
 public class MainActivity extends AppCompatActivity {
 

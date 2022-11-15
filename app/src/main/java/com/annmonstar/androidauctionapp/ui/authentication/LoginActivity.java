@@ -1,4 +1,4 @@
-package com.annmonstar.androidauctionapp;
+package com.annmonstar.androidauctionapp.ui.authentication;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -15,6 +15,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.annmonstar.androidauctionapp.ui.HomeActivity;
+import com.annmonstar.androidauctionapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -144,7 +146,7 @@ public class LoginActivity extends AppCompatActivity {
                                 });
 
                             } else {
-                                Log.e("TAG", "exception=" + Objects.requireNonNull(task.getException()).toString());
+                                Log.e("TAG", "exception=" + Objects.requireNonNull(task.getException()));
                                 Toast.makeText(LoginActivity.this, "Error - " +task.getException().toString(), Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -157,10 +159,21 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
     @Override
-    protected void onResume()
-    {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            Intent intent=new Intent(LoginActivity.this, HomeActivity.class);
+            startActivity(intent);
+            finish();
+            Toast.makeText(LoginActivity.this,"Log in success.",Toast.LENGTH_SHORT).show();
+        }
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         FirebaseDatabase.getInstance().goOnline();
 
     }

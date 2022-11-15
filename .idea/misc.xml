@@ -11,10 +11,14 @@
         <entry key="..\:/Android Studio/AndroidAuctionApp/app/src/main/res/layout/my_camp_layout.xml" value="0.33" />
         <entry key="..\:/Android Studio/AndroidAuctionApp/app/src/main/res/layout/product_view_imy_lay.xml" value="0.1598731884057971" />
         <entry key="..\:/Android Studio/AndroidAuctionApp/app/src/main/res/layout/status_bottom_sheet.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_add_productfor_bid.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_home.xml" value="0.35520833333333335" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.35520833333333335" />
+        <entry key="app/src/main/res/layout/images_lay.xml" value="0.35520833333333335" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

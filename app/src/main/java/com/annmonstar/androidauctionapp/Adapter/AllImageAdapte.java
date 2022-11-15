@@ -39,9 +39,9 @@ import java.util.Map;
 import java.util.Objects;
 
 import id.zelory.compressor.Compressor;
-import com.annmonstar.androidauctionapp.PathUtilvideo;
-import com.annmonstar.androidauctionapp.addProductforBid;
-import com.annmonstar.androidauctionapp.PathUtils;
+import com.annmonstar.androidauctionapp.ui.utils.PathUtilvideo;
+import com.annmonstar.androidauctionapp.ui.addProductforBid;
+import com.annmonstar.androidauctionapp.ui.utils.PathUtils;
 import com.annmonstar.androidauctionapp.R;
 
 public class AllImageAdapte extends RecyclerView.Adapter<AllImageAdapte.Viewholder> {
