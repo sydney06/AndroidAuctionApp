@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "561712605912",
+    "firebase_url": "https://live-auction-app-198f1-default-rtdb.firebaseio.com",
+    "project_id": "live-auction-app-198f1",
+    "storage_bucket": "live-auction-app-198f1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:561712605912:android:6c2cd9910a51344314c5ad",
+        "android_client_info": {
+          "package_name": "com.annmonstar.androidauctionapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "561712605912-a3mphq6rb0v41s7mtjm0tc4987f52m16.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMglrUoqZgGfHc5itfr_3-xRzJWfZPAnw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "561712605912-a3mphq6rb0v41s7mtjm0tc4987f52m16.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:561712605912:android:0caf0cf6e5da27d014c5ad",
+        "android_client_info": {
+          "package_name": "in.macrocodes.onlineauctionapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "561712605912-a3mphq6rb0v41s7mtjm0tc4987f52m16.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMglrUoqZgGfHc5itfr_3-xRzJWfZPAnw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "561712605912-a3mphq6rb0v41s7mtjm0tc4987f52m16.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
