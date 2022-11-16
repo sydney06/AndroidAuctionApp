@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.annmonstar.androidauctionapp.ui.ProductInformationActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
@@ -19,7 +20,6 @@ import java.util.List;
 import java.util.Objects;
 
 
-import com.annmonstar.androidauctionapp.ui.ProductInfoActivity;
 import com.annmonstar.androidauctionapp.R;
 
 public class pInfo_AllImageView extends RecyclerView.Adapter<pInfo_AllImageView.Viewholder> {
@@ -27,7 +27,7 @@ public class pInfo_AllImageView extends RecyclerView.Adapter<pInfo_AllImageView.
     ImageView pimageView;
     int current_pos,pre_pos;
     List<String> imageList = new ArrayList<>();
-    public pInfo_AllImageView(ProductInfoActivity productInfoActivity, List<String> imageList, ImageView pimageView) {
+    public pInfo_AllImageView(ProductInformationActivity productInfoActivity, List<String> imageList, ImageView pimageView) {
         this.context=productInfoActivity;
         this.imageList=imageList;
         this.pimageView=pimageView;
@@ -60,8 +60,7 @@ public class pInfo_AllImageView extends RecyclerView.Adapter<pInfo_AllImageView.
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                ImageViewAnimatedChange(context,pimageView,imageList.get(position));
+                ImageViewAnimatedChange(context,pimageView,imageList.get(holder.getLayoutPosition()));
             }
         });
     }

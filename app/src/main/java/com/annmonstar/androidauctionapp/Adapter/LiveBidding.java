@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.annmonstar.androidauctionapp.ui.ProductInformationActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -19,13 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.annmonstar.androidauctionapp.Models.BiddingModal;
-import com.annmonstar.androidauctionapp.ui.ProductInfoActivity;
 import com.annmonstar.androidauctionapp.R;
 
 public class LiveBidding extends RecyclerView.Adapter<LiveBidding.Viewholder> {
     List<BiddingModal> biddingList = new ArrayList<>();
     Context mContext;
-    public LiveBidding(ProductInfoActivity productInfoActivity, List<BiddingModal> biddingList) {
+    public LiveBidding(ProductInformationActivity productInfoActivity, List<BiddingModal> biddingList) {
         this.mContext = productInfoActivity;
         this.biddingList=biddingList;
     }

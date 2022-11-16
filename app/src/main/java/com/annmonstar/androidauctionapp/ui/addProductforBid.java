@@ -55,8 +55,9 @@ public class addProductforBid extends AppCompatActivity {
     private ImageView imageView;
     private String firebaseImagePath;
 
-    FirebaseStorage storage;
-    StorageReference storageReference;
+    private ProgressDialog progressDialog;
+    private FirebaseStorage storage;
+    private StorageReference storageReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +70,10 @@ public class addProductforBid extends AppCompatActivity {
         addProduct = (Button) findViewById(R.id.addProduct);
         addImage = (Button) findViewById(R.id.addImage);
         allImagesView = (RecyclerView) findViewById(R.id.Allimages);
-//        imageView = findViewById(R.id.imgView);
+
+
+      progressDialog
+                = new ProgressDialog(this);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true);
         linearLayoutManager.setStackFromEnd(true);
@@ -129,8 +133,7 @@ public class addProductforBid extends AppCompatActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        firebaseImagePath = "images/"
-                + UUID.randomUUID().toString();
+
 
 
         Map<String, Object> userMap = new HashMap<>();
@@ -144,7 +147,6 @@ public class addProductforBid extends AppCompatActivity {
         //add timestamp
         userMap.put("uid", uid);
 
-        uploadImage();
         assert push_id != null;
         reference.child(name).setValue(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -162,13 +164,14 @@ public class addProductforBid extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        firebaseImagePath = "images/"
+                + UUID.randomUUID().toString();
         if (requestCode == GALLERY && resultCode == RESULT_OK) {
             if (data.getData() != null) {
                 fileRealPath = data.getData();
                 images.add(fileRealPath);
                 mAdapter.notifyDataSetChanged();
-                addProduct();
+               uploadImage();
 
             } else if (data.getClipData() != null) {
                 int total = data.getClipData().getItemCount();
@@ -188,8 +191,6 @@ public class addProductforBid extends AppCompatActivity {
         if (fileRealPath != null) {
 
             // Code for showing progressDialog while uploading
-            ProgressDialog progressDialog
-                    = new ProgressDialog(this);
             progressDialog.setTitle("Uploading...");
             progressDialog.show();
 
@@ -208,15 +209,15 @@ public class addProductforBid extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(
                                         UploadTask.TaskSnapshot taskSnapshot) {
-
                                     // Image uploaded successfully
                                     // Dismiss dialog
-//                                    progressDialog.dismiss();
+                                    progressDialog.dismiss();
                                     Toast
                                             .makeText(addProductforBid.this,
                                                     "Image Uploaded!!",
                                                     Toast.LENGTH_SHORT)
                                             .show();
+                                    addProduct();
                                 }
                             })
 
@@ -245,12 +246,12 @@ public class addProductforBid extends AppCompatActivity {
                                             = (100.0
                                             * taskSnapshot.getBytesTransferred()
                                             / taskSnapshot.getTotalByteCount());
-//                                    progressDialog.setMessage(
-//                                            "Uploaded "
-//                                                    + (int) progress + "%");
+                                    progressDialog.setMessage(
+                                            "Uploaded "
+                                                    + (int) progress + "%");
                                 }
                             });
-            progressDialog.dismiss();
+//            progressDialog.dismiss();
         }
     }
 }

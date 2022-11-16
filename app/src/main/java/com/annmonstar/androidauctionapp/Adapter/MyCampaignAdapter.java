@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.annmonstar.androidauctionapp.ui.ProductInformationActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.firebase.database.DataSnapshot;
@@ -24,7 +25,6 @@ import java.util.List;
 import java.util.Objects;
 
 import com.annmonstar.androidauctionapp.Models.Products;
-import com.annmonstar.androidauctionapp.ui.ProductInfoActivity;
 import com.annmonstar.androidauctionapp.R;
 
 
@@ -98,7 +98,7 @@ public class MyCampaignAdapter extends RecyclerView.Adapter<MyCampaignAdapter.Vi
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, ProductInfoActivity.class);
+                Intent intent = new Intent(context, ProductInformationActivity.class);
                 intent.putExtra("pname",productModel.getName());
                 intent.putExtra("pdesc",productModel.getDescription());
                 intent.putExtra("prate",productModel.getBid());
@@ -112,7 +112,7 @@ public class MyCampaignAdapter extends RecyclerView.Adapter<MyCampaignAdapter.Vi
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                removeAt(position);
+                removeAt(holder.getLayoutPosition());
                 DatabaseReference dR = FirebaseDatabase.getInstance().getReference("Products").child(productModel.getName());
                 dR.removeValue();
             }

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -15,15 +16,22 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.annmonstar.androidauctionapp.Adapter.LiveBidding;
+import com.annmonstar.androidauctionapp.Adapter.pInfo_AllImageView;
+import com.annmonstar.androidauctionapp.Models.BiddingModal;
 import com.annmonstar.androidauctionapp.R;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,42 +39,37 @@ import java.util.List;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import com.annmonstar.androidauctionapp.Adapter.LiveBidding;
-import com.annmonstar.androidauctionapp.Models.BiddingModal;
-import com.annmonstar.androidauctionapp.Adapter.pInfo_AllImageView;
 
-public class ProductInfoActivity extends AppCompatActivity {
-    String name,desc,bid,uid,mine,status;
-    RecyclerView allImageView;
-    pInfo_AllImageView mAdapter;
-    TextView pname,pdesc,sellername;
-    ImageView imageView;
-    TextView rate,sellerbidViewname,sellercity;
-    CircleImageView sellerImage;
-    Button bidNow;
-    List<String> imageList = new ArrayList<>();
-    RecyclerView bidView;
+public class ProductInformationActivity extends AppCompatActivity {
+    private String name,desc,bid,uid,mine,status;
+    private RecyclerView allImageView;
+    private  pInfo_AllImageView mAdapter;
+    private TextView pname,pdesc,sellername;
+    private ImageView imageView;
+    private TextView rate,sellerbidViewname,sellercity;
+    private  CircleImageView sellerImage;
+    private  Button bidNow;
+    private final List<String> imageList = new ArrayList<>();
+    private RecyclerView bidView;
 
-    List<BiddingModal> biddingList = new ArrayList<>();
-    EditText bidtext;
-    LiveBidding mAdapter2;
-    Button bidBtn;
+    private final List<BiddingModal> biddingList = new ArrayList<>();
+    private  EditText bidtext;
+    private  LiveBidding mAdapter2;
+    private   Button bidBtn;
 
-    TextView title,sold;
-    LinearLayout biddingLayout;
-
+    StorageReference mStorage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_product_info);
+        setContentView(R.layout.activity_product_information);
         allImageView = (RecyclerView) findViewById(R.id.allImageView);
 
         sellername = (TextView) findViewById(R.id.SellerName);
         sellercity = (TextView) findViewById(R.id.SellerCity);
         sellerImage = (CircleImageView) findViewById(R.id.sellerProfile);
-        title = (TextView) findViewById(R.id.title);
-        sold = (TextView) findViewById(R.id.sold);
-        biddingLayout = (LinearLayout) findViewById(R.id.bidLayout);
+        TextView title = (TextView) findViewById(R.id.title);
+        TextView sold = (TextView) findViewById(R.id.sold);
+        LinearLayout biddingLayout = (LinearLayout) findViewById(R.id.bidLayout);
 
         bidBtn = (Button) findViewById(R.id.bidbtn);
         bidtext = (EditText) findViewById(R.id.bidtxt);
@@ -80,16 +83,16 @@ public class ProductInfoActivity extends AppCompatActivity {
         pdesc = (TextView) findViewById(R.id.pdesc);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
         allImageView.setLayoutManager(linearLayoutManager);
-        mAdapter = new pInfo_AllImageView(ProductInfoActivity.this,imageList,imageView);
+        mAdapter = new pInfo_AllImageView(ProductInformationActivity.this,imageList,imageView);
         allImageView.setAdapter(mAdapter);
 
-
+        mStorage = FirebaseStorage.getInstance().getReference();
 
         LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(this);
 
 
         bidView.setLayoutManager(linearLayoutManager2);
-        mAdapter2 = new LiveBidding(ProductInfoActivity.this,biddingList);
+        mAdapter2 = new LiveBidding(ProductInformationActivity.this,biddingList);
         bidView.setAdapter(mAdapter2);
 
 
@@ -161,20 +164,20 @@ public class ProductInfoActivity extends AppCompatActivity {
                             DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Products")
                                     .child(name).child("bidding");
                             String puch_id = reference.push().getKey();
-                            HashMap<Object,String>hashMap = new HashMap<>();
+                            HashMap<Object,String> hashMap = new HashMap<>();
                             hashMap.put("bid",b);
                             hashMap.put("uid", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
                             assert puch_id != null;
                             reference.child(puch_id).setValue(hashMap);
                         }else{
-                            Toast.makeText(ProductInfoActivity.this, "Bidding amount must be greater than the product value", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ProductInformationActivity.this, "Bidding amount must be greater than the product value", Toast.LENGTH_SHORT).show();
                         }
                     }else{
-                        Toast.makeText(ProductInfoActivity.this, "Please enter a bidding amount", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProductInformationActivity.this, "Please enter a bidding amount", Toast.LENGTH_SHORT).show();
                     }
 
                 }else{
-                    Toast.makeText(ProductInfoActivity.this, "You can't bid in your own product", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ProductInformationActivity.this, "You can't bid in your own product", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -192,7 +195,7 @@ public class ProductInfoActivity extends AppCompatActivity {
                 sellername.setText(name);
                 sellercity.setText("From "+city);
 
-                Glide.with(Objects.requireNonNull(ProductInfoActivity.this))
+                Glide.with(Objects.requireNonNull(ProductInformationActivity.this))
                         .load(profile)
                         .diskCacheStrategy(DiskCacheStrategy.DATA)
                         .placeholder(R.drawable.default_avatar)
@@ -209,17 +212,21 @@ public class ProductInfoActivity extends AppCompatActivity {
     private void getData(){
         imageList.clear();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Products").child(name).child("Images");
+
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (int i=0;i<snapshot.getChildrenCount();i++){
-                    imageList.add(Objects.requireNonNull(snapshot.child("image" + i).getValue()).toString());
+                    mStorage
+                            .child(Objects.requireNonNull(snapshot.child("image" + i).getValue()).toString()).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Uri> task) {
+                                    imageList.add(task.getResult().toString());
+                                }
+                            });
+
                 }
-                Glide.with(ProductInfoActivity.this)
-                        .load(imageList.get(0))
-                        .diskCacheStrategy(DiskCacheStrategy.DATA)
-                        .placeholder(R.drawable.default_send_image)
-                        .into(imageView);
+
                 mAdapter.notifyDataSetChanged();
             }
 
@@ -236,12 +243,19 @@ public class ProductInfoActivity extends AppCompatActivity {
         uid = getIntent().getStringExtra("uid");
         status = getIntent().getStringExtra("status");
         mine = getIntent().getStringExtra("mine");
-        if (mine!=null){
-           // bidNow.setText("View Bidding of Your Product");
-        }
+        Uri imageUri = Uri.parse(getIntent().getStringExtra("image"));
+        // bidNow.setText("View Bidding of Your Product");
 
         pname.setText(name);
         pdesc.setText(desc);
         rate.setText("Bidding Starts at Ksh "+bid);
+        Glide
+                .with(ProductInformationActivity.this)
+                .load(imageUri)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .centerCrop()
+                .into(imageView);
+
     }
+
 }

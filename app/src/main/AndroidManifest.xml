@@ -13,23 +13,27 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.OnlineAuctionApp">
-        <activity android:name="com.annmonstar.androidauctionapp.ui.MyCampaigns" />
-        <activity android:name="com.annmonstar.androidauctionapp.ui.ProductInfoActivity" />
-        <activity android:name="com.annmonstar.androidauctionapp.ui.SettingsActivity" />
-        <activity android:name="com.annmonstar.androidauctionapp.ui.addProductforBid" />
-        <activity android:name="com.annmonstar.androidauctionapp.ui.HomeActivity"
+        <activity
+            android:name=".ui.ProductInformationActivity"
+            android:exported="false"   android:theme="@style/Theme.OnlineAuctionApp.NoActionBar"
+            android:parentActivityName=".ui.HomeActivity"/>
+        <activity android:name=".ui.MyCampaigns" />
+        <activity android:name=".ui.SettingsActivity" />
+        <activity android:name=".ui.addProductforBid" />
+        <activity
+            android:name=".ui.HomeActivity"
+            android:exported="true"/>
+        <activity
+            android:name=".ui.authentication.LoginActivity"
             android:exported="true">
-
-        </activity>
-        <activity android:name="com.annmonstar.androidauctionapp.ui.authentication.LoginActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.annmonstar.androidauctionapp.ui.authentication.RegisterActivity" />
-        <activity android:name="com.annmonstar.androidauctionapp.ui.MainActivity" />
+        <activity android:name=".ui.authentication.RegisterActivity" />
+        <activity android:name=".ui.MainActivity" />
     </application>
 
 </manifest>

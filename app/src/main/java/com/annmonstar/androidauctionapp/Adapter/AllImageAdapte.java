@@ -64,8 +64,8 @@ public class AllImageAdapte extends RecyclerView.Adapter<AllImageAdapte.Viewhold
     @Override
     public void onBindViewHolder(@NonNull Viewholder holder, int position) {
 
-        pos = position;
-        Uri uri = images.get(position);
+        pos = holder.getLayoutPosition();
+        Uri uri = images.get(holder.getLayoutPosition());
         Glide.with(mContext)
                 .load(uri)
                 .centerCrop()
@@ -75,7 +75,7 @@ public class AllImageAdapte extends RecyclerView.Adapter<AllImageAdapte.Viewhold
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                removeAt(position);
+                removeAt(holder.getLayoutPosition());
             }
         });
 

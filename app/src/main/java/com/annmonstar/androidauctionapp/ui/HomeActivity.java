@@ -56,12 +56,12 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        addProduct = (FloatingActionButton) findViewById(R.id.addProduct);
-        mRecyclerView = (RecyclerView) findViewById(R.id.productList);
+        addProduct = findViewById(R.id.addProduct);
+        mRecyclerView = findViewById(R.id.productList);
 
 
 
-        refresh = (ImageView) findViewById(R.id.refresh);
+        refresh = findViewById(R.id.refresh);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refreshLayout);
         bottomAppBar = (BottomAppBar) findViewById(R.id.bottomAppBar);
         //setSupportActionBar(bottomAppBar);
@@ -78,21 +78,14 @@ public class HomeActivity extends AppCompatActivity {
         getAllProducts();
         checkProductDate();
 
-        addProduct.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(HomeActivity.this,addProductforBid.class);
-                startActivity(intent);
-            }
+        addProduct.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this,addProductforBid.class);
+            startActivity(intent);
         });
 
-        refresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getAllProducts();
-                mSwipeRefreshLayout.setRefreshing(true);
-            }
+        refresh.setOnClickListener(v -> {
+            getAllProducts();
+            mSwipeRefreshLayout.setRefreshing(true);
         });
 
 
