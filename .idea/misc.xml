@@ -14,10 +14,13 @@
         <entry key="app/src/main/res/drawable/button3.xml" value="0.2975" />
         <entry key="app/src/main/res/layout/activity_add_productfor_bid.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_home.xml" value="0.35520833333333335" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.35520833333333335" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.35520833333333335" />
         <entry key="app/src/main/res/layout/activity_product_info.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_product_information.xml" value="0.14444444444444443" />
+        <entry key="app/src/main/res/layout/activity_signup.xml" value="0.35520833333333335" />
         <entry key="app/src/main/res/layout/images_lay.xml" value="0.35520833333333335" />
+        <entry key="app/src/main/res/layout/live_bid.xml" value="0.35520833333333335" />
       </map>
     </option>
   </component>
@@ -30,7 +33,7 @@
   <component name="VisualizationToolProject">
     <option name="state">
       <ProjectState>
-        <option name="scale" value="0.35520833333333335" />
+        <option name="scale" value="0.14444444444444443" />
       </ProjectState>
     </option>
   </component>

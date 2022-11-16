@@ -23,6 +23,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    buildTypes.each {
+        it.buildConfigField 'String', 'CONSUMER_KEY',DARAJA_CONSUMER_KEY
+        it.buildConfigField 'String', 'CONSUMER_SECRET', DARAJA_CONSUMER_SECRET
+    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -51,6 +55,10 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
+
+    implementation 'com.squareup.retrofit2:retrofit:2.6.2'
+    implementation 'com.squareup.retrofit2:converter-gson:2.6.2'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.2.1'
 
 
 }
