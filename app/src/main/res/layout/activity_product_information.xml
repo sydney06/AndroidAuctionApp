@@ -151,7 +151,8 @@
                                 android:padding="8dp"
                                 android:textAlignment="center"
                                 android:textColor="@android:color/black"
-                                android:textSize="24dp"
+                                android:textColorHint="@color/faint_txt_color"
+                                android:textSize="16dp"
                                 app:backgroundTint="@null" />
 
                             <Button
@@ -171,10 +172,21 @@
 
                 </androidx.cardview.widget.CardView>
 
-
+                <Button
+                    android:id="@+id/make_payment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/rect_btn"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:text="Make Payment"
+                    android:textColor="#fff"
+                    android:textSize="13dp"
+                    app:backgroundTint="@null" />
                 <View
                     android:layout_width="wrap_content"
-                    android:layout_height="50dp" />
+                    android:layout_height="40dp" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -185,7 +197,7 @@
                     android:fontFamily="@font/nunito_bold"
                     android:maxLines="2"
                     android:text="Seller"
-                    android:textColor="#000"
+                    android:textColor="@android:color/black"
                     android:textSize="17dp" />
 
                 <LinearLayout
@@ -216,14 +228,13 @@
                             android:fontFamily="@font/nunito_semibold"
                             android:maxLines="2"
                             android:text="Seller Name"
-                            android:textColor="#000"
+                            android:textColor="@android:color/black"
                             android:textSize="15dp" />
 
                         <TextView
                             android:id="@+id/SellerCity"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-
                             android:layout_marginStart="20dp"
                             android:fontFamily="@font/nunito_semibold"
                             android:maxLength="43"
