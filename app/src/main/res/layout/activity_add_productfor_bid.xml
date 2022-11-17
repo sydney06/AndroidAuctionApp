@@ -139,6 +139,7 @@
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="20dp"
                 android:fontFamily="@font/nunito_semibold"
+                android:textColor="#191919"
                 android:text="Your ad campaign will run till the number of days you will provide above. Maximum days to run a campaign is 7 days"
                 android:textAlignment="center"
                 android:textSize="13dp" />
