@@ -8,9 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.annmonstar.androidauctionapp.Models.Products;
@@ -28,6 +30,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -36,7 +39,7 @@ public class MyCampaignAdapter extends RecyclerView.Adapter<MyCampaignAdapter.Vi
     Context context;
     List<Products> myProducts;
     StorageReference mStorage;
-
+    private static ArrayList<CardView> cardViewArrayList = new ArrayList<>();
     public MyCampaignAdapter(Context context, List<Products> myProducts) {
         this.context = context;
         this.myProducts = myProducts;
@@ -57,6 +60,9 @@ public class MyCampaignAdapter extends RecyclerView.Adapter<MyCampaignAdapter.Vi
         holder.pdesc.setText("Ksh " + productModel.getBid());
         getPData(productModel.getMainImageUrl(), holder.pImage);
         mStorage = FirebaseStorage.getInstance().getReference();
+        holder.delete.setVisibility(View.GONE);
+        addCardView(holder.cardView);
+        holder.delete.setVisibility(View.VISIBLE);
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Products").child(productModel.getName());
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -158,6 +164,7 @@ public class MyCampaignAdapter extends RecyclerView.Adapter<MyCampaignAdapter.Vi
         private final TextView pName;
         private final TextView pdesc;
         private final TextView bidstatus;
+        private final CardView cardView;
 
         public Viewholder(@NonNull View itemView) {
             super(itemView);
@@ -166,6 +173,16 @@ public class MyCampaignAdapter extends RecyclerView.Adapter<MyCampaignAdapter.Vi
             pImage = itemView.findViewById(R.id.pimage);
             delete = itemView.findViewById(R.id.delete);
             bidstatus = itemView.findViewById(R.id.bidStatus);
+            cardView = itemView.findViewById(R.id.card_view);
         }
+    }
+    private static void addCardView(CardView cardView)
+    {
+        cardViewArrayList.add(cardView);
+    }
+
+    public static ArrayList<CardView> getCardViewList()
+    {
+        return cardViewArrayList;
     }
 }
