@@ -15,14 +15,15 @@
         android:theme="@style/Theme.OnlineAuctionApp">
         <activity
             android:name=".ui.ProductInformationActivity"
-            android:exported="false"   android:theme="@style/Theme.OnlineAuctionApp.NoActionBar"
-            android:parentActivityName=".ui.HomeActivity"/>
+            android:exported="false"
+            android:parentActivityName=".ui.HomeActivity"
+            android:theme="@style/Theme.OnlineAuctionApp.NoActionBar" />
         <activity android:name=".ui.MyCampaigns" />
         <activity android:name=".ui.SettingsActivity" />
         <activity android:name=".ui.addProductforBid" />
         <activity
             android:name=".ui.HomeActivity"
-            android:exported="true"/>
+            android:exported="true" />
         <activity
             android:name=".ui.authentication.LoginActivity"
             android:exported="true">

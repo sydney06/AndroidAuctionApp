@@ -30,6 +30,8 @@ public class MyCampaigns extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_campaigns);
+        getSupportActionBar().setTitle("Notifications");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mRecyclerView = (RecyclerView) findViewById(R.id.myCamp);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(linearLayoutManager);
@@ -41,7 +43,9 @@ public class MyCampaigns extends AppCompatActivity {
     private void getMyCampaign(){
 
         myProducts.clear();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Products");
+        DatabaseReference reference= FirebaseDatabase.getInstance().getReference().child("Users")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("products");
+
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
