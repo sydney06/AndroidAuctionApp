@@ -10,6 +10,7 @@ import static com.annmonstar.androidauctionapp.ui.utils.STKPushUtils.getTimestam
 import static com.annmonstar.androidauctionapp.ui.utils.STKPushUtils.sanitizePhoneNumber;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -284,7 +285,6 @@ public class ProductInformationActivity extends AppCompatActivity {
         uid = getIntent().getStringExtra("uid");
         status = getIntent().getStringExtra("status");
         mine = getIntent().getStringExtra("mine");
-        Uri imageUri = Uri.parse(getIntent().getStringExtra("image"));
 
         // bidNow.setText("View Bidding of Your Product");
 
@@ -402,7 +402,11 @@ public class ProductInformationActivity extends AppCompatActivity {
                 mProgressDialog.dismiss();
                 try {
                     if (response.isSuccessful()) {
-
+                        Intent intent = new Intent(ProductInformationActivity.this, HomeActivity.class);
+                        startActivity(intent);
+                        FirebaseDatabase.getInstance().getReference().child("Products")
+                                .child(name).child("status").setValue("Paid");
+                        finish();
                     } else {
                         Toast.makeText(getApplicationContext(), response.message(), Toast.LENGTH_SHORT).show();
                         Log.d("TAGElse", response.toString());
