@@ -4,33 +4,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:background="@color/white"
     tools:context="com.annmonstar.androidauctionapp.ui.addProductforBid">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
                 android:layout_gravity="center"
+                android:layout_marginTop="20dp"
                 android:text="Add Product for Bid"
-                android:textStyle="bold"
+                android:textColor="#4F26AF"
                 android:textSize="25dp"
-                android:textColor="#4F26AF" />
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/productName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
-                android:textSize="16dp"
                 android:layout_marginTop="30dp"
                 android:layout_marginEnd="30dp"
                 android:background="@android:color/transparent"
@@ -41,6 +42,7 @@
                 android:padding="15dp"
                 android:textColor="#191919"
                 android:textColorHint="#696969"
+                android:textSize="16dp"
                 android:textStyle="bold" />
 
             <RelativeLayout
@@ -83,18 +85,19 @@
                 android:layout_marginStart="30dp"
                 android:layout_marginTop="30dp"
                 android:layout_marginEnd="30dp"
-                android:imeOptions="actionNext"
-                android:textSize="16dp"
-
                 android:background="@android:color/transparent"
-                android:hint="Description about product"
-
                 android:drawableTint="#696969"
+
+                android:hint="Description about product"
+                android:imeOptions="actionNext"
+
+                android:inputType="textMultiLine"
                 android:padding="15dp"
                 android:textColor="#191919"
-                android:inputType="textMultiLine"
                 android:textColorHint="#696969"
+                android:textSize="16dp"
                 android:textStyle="bold" />
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -132,21 +135,21 @@
                 android:id="@+id/privacy"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:textSize="13dp"
-                android:fontFamily="@font/nunito_semibold"
-                android:layout_marginTop="40dp"
                 android:layout_marginStart="20dp"
+                android:layout_marginTop="40dp"
                 android:layout_marginEnd="20dp"
-                android:text="Your ad campaign will run till the number of days you will provide above. Maximum days to run a campaign is 7 days"/>
+                android:fontFamily="@font/nunito_semibold"
+                android:text="Your ad campaign will run till the number of days you will provide above. Maximum days to run a campaign is 7 days"
+                android:textAlignment="center"
+                android:textSize="13dp" />
 
             <!--Image View for showing image chosen from gallery-->
 
-          <androidx.recyclerview.widget.RecyclerView
-              android:layout_width="match_parent"
-              android:id="@+id/Allimages"
-              android:layout_marginTop="20dp"
-              android:layout_height="wrap_content"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/Allimages"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp" />
 
             <Button
                 android:id="@+id/addImage"
@@ -155,24 +158,27 @@
                 android:layout_marginStart="50dp"
                 android:layout_marginTop="50dp"
                 android:layout_marginEnd="50dp"
+                android:background="@drawable/button3"
                 android:text="Add Product Image"
                 android:textAllCaps="false"
                 android:textColor="#4F26AF"
                 android:textSize="16dp"
-                android:background="@drawable/button3" />
+                app:backgroundTint="@null" />
+
             <Button
                 android:id="@+id/addProduct"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginStart="50dp"
-                android:layout_marginEnd="50dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginEnd="50dp"
                 android:layout_marginBottom="80dp"
-                android:textColor="#fff"
                 android:background="@drawable/rect_btn"
                 android:text="Add Product"
+                android:textAllCaps="false"
+                android:textColor="#fff"
                 android:textSize="16dp"
-                android:textAllCaps="false" />
+                app:backgroundTint="@null" />
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
