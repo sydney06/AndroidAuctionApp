@@ -95,6 +95,8 @@ public class ProductInformationActivity extends AppCompatActivity {
 
         bidBtn = (Button) findViewById(R.id.bidbtn);
         bidtext = (EditText) findViewById(R.id.bidtxt);
+
+
         bidView = (RecyclerView) findViewById(R.id.bidView);
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
@@ -126,7 +128,10 @@ public class ProductInformationActivity extends AppCompatActivity {
         getData();
         bidStart();
         getBidding();
-
+        if (status.equals("Expired")){
+            bidBtn.setVisibility(View.GONE);
+            bidtext.setVisibility(View.GONE);
+        }
 
         if (status.equalsIgnoreCase("stop")) {
             biddingLayout.setVisibility(View.GONE);
@@ -139,7 +144,13 @@ public class ProductInformationActivity extends AppCompatActivity {
         mApiClient.setIsDebug(true);
 
         getAccessToken();
-        mMakePayment.setOnClickListener(v -> makePayment());
+        mMakePayment.setOnClickListener(v -> {
+            if (status.equals("Expired")) {
+                makePayment();
+            } else {
+                Toast.makeText(ProductInformationActivity.this, "Bidding still in progress.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void getBidding() {
@@ -169,7 +180,6 @@ public class ProductInformationActivity extends AppCompatActivity {
                     }
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
@@ -178,50 +188,38 @@ public class ProductInformationActivity extends AppCompatActivity {
     }
 
     private void bidStart() {
-        bidBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        bidBtn.setOnClickListener(v -> {
+            if (!uid.equalsIgnoreCase(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                String b = bidtext.getText().toString().trim();
+                if (!b.isEmpty()) {
+                    if (Integer.parseInt(b) > Integer.parseInt(bid)) {
+                        bidtext.setText("");
+                        String uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Products")
+                                .child(name).child("bidding");
+                        String puch_id = reference.push().getKey();
+                        HashMap<Object, String> hashMap = new HashMap<>();
+                        hashMap.put("bid", b);
+                        hashMap.put("uid", uid);
+                        assert puch_id != null;
+                        reference.child(puch_id).setValue(hashMap);
+                        FirebaseDatabase.getInstance().getReference().child("Products")
+                                .child(name).child("bid").setValue(b);
+                        FirebaseDatabase.getInstance().getReference().child("Products")
+                                .child(name).child("winner").setValue(uid);
 
-                if (!uid.equalsIgnoreCase(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                    String b = bidtext.getText().toString().trim();
-                    if (!b.isEmpty()) {
-                        if (Integer.parseInt(b) > Integer.parseInt(bid)) {
-                            if (checkBiddingAmount(Integer.parseInt(b))) {
-                                bidtext.setText("");
-
-                                DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Products")
-                                        .child(name).child("bidding");
-                                String puch_id = reference.push().getKey();
-                                HashMap<Object, String> hashMap = new HashMap<>();
-                                hashMap.put("bid", b);
-                                hashMap.put("uid", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
-                                assert puch_id != null;
-                                reference.child(puch_id).setValue(hashMap);
-                            }
-                        } else {
-                            Toast.makeText(ProductInformationActivity.this, "Bidding amount must be greater than the product value", Toast.LENGTH_SHORT).show();
-                        }
                     } else {
-                        Toast.makeText(ProductInformationActivity.this, "Please enter a bidding amount", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProductInformationActivity.this, "Bidding amount must be greater than " + bid, Toast.LENGTH_SHORT).show();
                     }
-
                 } else {
-                    Toast.makeText(ProductInformationActivity.this, "You can't bid in your own product", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ProductInformationActivity.this, "Please enter a bidding amount", Toast.LENGTH_SHORT).show();
                 }
 
+            } else {
+                Toast.makeText(ProductInformationActivity.this, "You can't bid in your own product", Toast.LENGTH_SHORT).show();
             }
+
         });
-    }
-
-    private boolean checkBiddingAmount(int bid) {
-        for (BiddingModal biddingModal : biddingList) {
-            if (bid < Integer.parseInt(biddingModal.getBid())) {
-                Toast.makeText(ProductInformationActivity.this, "Bidding amount should be greater than " + Integer.parseInt(biddingModal.getBid()), Toast.LENGTH_LONG).show();
-                return false;
-            }
-        }
-
-        return true;
     }
 
     private void getSellerInfo() {
@@ -293,12 +291,34 @@ public class ProductInformationActivity extends AppCompatActivity {
         pname.setText(name);
         pdesc.setText(desc);
         rate.setText("Bidding Starts at Ksh " + bid);
-        Glide
-                .with(ProductInformationActivity.this)
-                .load(imageUri)
-                .diskCacheStrategy(DiskCacheStrategy.DATA)
-                .centerCrop()
-                .into(imageView);
+        FirebaseDatabase.getInstance().getReference().child("Products").child(name).child("Images").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!Objects.requireNonNull(snapshot.child("image0").getValue()).toString().equals("default")){
+                    String url = Objects.requireNonNull(snapshot.child("image0").getValue()).toString();
+                    mStorage
+                            .child(url).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Uri> task) {
+                                    Log.d("ADAPTER", task.getResult()+"");
+                                    Glide
+                                            .with(ProductInformationActivity.this)
+                                            .load(task.getResult())
+                                            .diskCacheStrategy(DiskCacheStrategy.DATA)
+                                            .centerCrop()
+                                            .into(imageView);
+                                }
+                            });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+
+        });
+
 
     }
 
@@ -317,19 +337,22 @@ public class ProductInformationActivity extends AppCompatActivity {
                                 if (!task.isSuccessful()) {
                                     Log.e("firebase", "Error getting data", task.getException());
                                 } else {
-                                    performSTKPush(task.getResult().getValue().toString(), Integer.parseInt(bid));
+                                    if (Integer.parseInt(bid) < 150000) {
+                                        performSTKPush(task.getResult().getValue().toString(), Integer.parseInt(bid));
+                                    } else {
+                                        Toast.makeText(ProductInformationActivity.this, "The amount is past M-Pesa Limit", Toast.LENGTH_LONG).show();
+                                    }
                                 }
                             }
                         });
-                    }else{
+                    } else {
                         Toast.makeText(ProductInformationActivity.this, "You're not the winner of the bid", Toast.LENGTH_LONG).show();
                     }
                 }
             }
         });
-
-//        performSTKPush(); TODO
     }
+
 
     private void getAccessToken() {
         mApiClient.setGetAccessToken(true);
@@ -398,4 +421,9 @@ public class ProductInformationActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }
