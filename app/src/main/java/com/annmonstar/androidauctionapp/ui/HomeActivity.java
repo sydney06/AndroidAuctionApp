@@ -1,5 +1,12 @@
 package com.annmonstar.androidauctionapp.ui;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -7,13 +14,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
-
+import com.annmonstar.androidauctionapp.Adapter.AdapterClass;
+import com.annmonstar.androidauctionapp.Models.BiddingModal;
+import com.annmonstar.androidauctionapp.Models.Products;
 import com.annmonstar.androidauctionapp.R;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -26,16 +29,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-
-import com.annmonstar.androidauctionapp.Models.BiddingModal;
-import com.annmonstar.androidauctionapp.Models.Products;
-import com.annmonstar.androidauctionapp.Adapter.AdapterClass;
 
 public class HomeActivity extends AppCompatActivity {
     int max = -1;
@@ -51,14 +51,14 @@ public class HomeActivity extends AppCompatActivity {
     private int mCurrentPage = 1;
     private String mLastKey = "";
     private String mPrevKey = "";
-    List<Products>allProducts = new ArrayList<>();
+    List<Products> allProducts = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         addProduct = findViewById(R.id.addProduct);
         mRecyclerView = findViewById(R.id.productList);
-
 
 
         refresh = findViewById(R.id.refresh);
@@ -68,18 +68,17 @@ public class HomeActivity extends AppCompatActivity {
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setStackFromEnd(true);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this,2));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
-        mAdapter = new AdapterClass(HomeActivity.this,allProducts);
+        mAdapter = new AdapterClass(HomeActivity.this, allProducts);
         mRecyclerView.setAdapter(mAdapter);
-
 
 
         getAllProducts();
         checkProductDate();
 
         addProduct.setOnClickListener(v -> {
-            Intent intent = new Intent(HomeActivity.this,addProductforBid.class);
+            Intent intent = new Intent(HomeActivity.this, addProductforBid.class);
             startActivity(intent);
         });
 
@@ -90,21 +89,22 @@ public class HomeActivity extends AppCompatActivity {
 
 
     }
-    public void checkProductDate(){
+
+    public void checkProductDate() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Products");
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull  DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     reference.child(Objects.requireNonNull(dataSnapshot.getKey())).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onDataChange(@NonNull  DataSnapshot snapshot2) {
+                        public void onDataChange(@NonNull DataSnapshot snapshot2) {
                             String uid = Objects.requireNonNull(snapshot2.child("uid").getValue()).toString();
-                            if (uid.equals(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid())){
+                            if (uid.equals(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid())) {
                                 Products products = snapshot2.getValue(Products.class);
 
                                 assert products != null;
-                                String expireDate= products.getTimestamp();
+                                String expireDate = products.getTimestamp();
                                 SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
                                 Date date = new Date();
@@ -112,11 +112,11 @@ public class HomeActivity extends AppCompatActivity {
 
                                 int result = todayDate.compareTo(expireDate);
 
-                                if (result >= 0){
-                                    HashMap<String,Object> hashMap = new HashMap();
-                                    hashMap.put("status","stop");
+                                if (result >= 0) {
+                                    HashMap<String, Object> hashMap = new HashMap();
+                                    hashMap.put("status", "stop");
                                     reference.child(products.getName()).updateChildren(hashMap);
-                                    getBiddingData(reference,products);
+                                    getBiddingData(reference, products);
 
                                 }
 
@@ -124,7 +124,7 @@ public class HomeActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onCancelled(@NonNull  DatabaseError error) {
+                        public void onCancelled(@NonNull DatabaseError error) {
 
                         }
                     });
@@ -132,62 +132,77 @@ public class HomeActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(@NonNull  DatabaseError error) {
+            public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
     }
 
-    private void getBiddingData(DatabaseReference reference,Products products) {
-
+    private void getBiddingData(DatabaseReference reference, Products products) {
         reference.child(products.getName()).child("bidding").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull  DataSnapshot snapshot) {
-                if (snapshot.exists()){
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                       BiddingModal biddingModal = dataSnapshot.getValue(BiddingModal.class);
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        BiddingModal biddingModal = dataSnapshot.getValue(BiddingModal.class);
                         assert biddingModal != null;
                         int bid = Integer.parseInt(biddingModal.getBid());
-                       if (bid>max){
-                           max = bid;
-                           maxUserId = biddingModal.getUid();
-                       }
+                        if (bid > max) {
+                            max = bid;
+                            maxUserId = biddingModal.getUid();
+                        }
                     }
                 }
 
 
-                HashMap<String,Object> map = new HashMap<>();
-                map.put("bid",max);
-                map.put("uid",maxUserId);
+                HashMap<String, Object> map = new HashMap<>();
+                map.put("bid", max);
+                map.put("uid", maxUserId);
 
                 reference.child(products.getName()).child("winner").updateChildren(map);
 
             }
 
             @Override
-            public void onCancelled(@NonNull  DatabaseError error) {
+            public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
     }
 
-    public void getAllProducts(){
-
+    public void getAllProducts() {
         allProducts.clear();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Products");
-
-
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     ref.child(Objects.requireNonNull(dataSnapshot.getKey())).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             Products products = dataSnapshot.getValue(Products.class);
-                            allProducts.add(products);
-                            mAdapter.notifyDataSetChanged();
-                            mSwipeRefreshLayout.setRefreshing(false);
+                            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                            Date dn = new Date();
+                            String formatted = formatter.format(dn);
+
+                            try {
+                                Date today = formatter.parse(formatted);
+                                assert products != null;
+                                Date expires = formatter.parse(Objects.requireNonNull(products.getTimestamp()));
+                                assert today != null;
+                                if (today.after(expires)) {
+                                    //TODO: Notify the seller by sending email of buyer
+                                    FirebaseDatabase.getInstance().getReference().child("Products")
+                                            .child(products.getName()).child("status").setValue("Expired");
+
+                                }
+                                allProducts.add(products);
+                                mAdapter.notifyDataSetChanged();
+                                mSwipeRefreshLayout.setRefreshing(true);
+
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
                         }
 
                         @Override
@@ -255,13 +270,13 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.settings:
-                Intent intent = new Intent(HomeActivity.this,SettingsActivity.class);
+                Intent intent = new Intent(HomeActivity.this, SettingsActivity.class);
                 startActivity(intent);
                 return true;
             case R.id.mycamp:
-                Intent intent2 = new Intent(HomeActivity.this,MyCampaigns.class);
+                Intent intent2 = new Intent(HomeActivity.this, MyCampaigns.class);
                 startActivity(intent2);
                 return true;
 
@@ -271,14 +286,13 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseDatabase.getInstance().goOnline();
-        if(currentUser == null){
+        if (currentUser == null) {
             Intent startIntent = new Intent(this, MainActivity.class);
             startActivity(startIntent);
             finish();
