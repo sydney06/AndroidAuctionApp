@@ -144,6 +144,8 @@ public class addProductforBid extends AppCompatActivity {
         userMap.put("winner", "default");
         userMap.put("status", "running");
         userMap.put("timestamp", expireDate);
+        userMap.put("mainImage", firebaseImagePath);
+
         //add timestamp
         userMap.put("uid", uid);
 

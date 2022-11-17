@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,9 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.annmonstar.androidauctionapp.Adapter.AdapterClass;
-import com.annmonstar.androidauctionapp.Models.BiddingModal;
 import com.annmonstar.androidauctionapp.Models.Products;
 import com.annmonstar.androidauctionapp.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,11 +33,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
 public class HomeActivity extends AppCompatActivity {
+    private static final int TOTAL_ITEMS_TO_LOAD = 2000;
     int max = -1;
     String maxUserId = null;
     FloatingActionButton addProduct;
@@ -46,12 +46,11 @@ public class HomeActivity extends AppCompatActivity {
     BottomAppBar bottomAppBar;
     ImageView refresh;
     SwipeRefreshLayout mSwipeRefreshLayout;
+    List<Products> allProducts = new ArrayList<>();
     private int itemPos = 0;
-    private static final int TOTAL_ITEMS_TO_LOAD = 2000;
     private int mCurrentPage = 1;
     private String mLastKey = "";
     private String mPrevKey = "";
-    List<Products> allProducts = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +74,6 @@ public class HomeActivity extends AppCompatActivity {
 
 
         getAllProducts();
-        checkProductDate();
 
         addProduct.setOnClickListener(v -> {
             Intent intent = new Intent(HomeActivity.this, addProductforBid.class);
@@ -86,89 +84,10 @@ public class HomeActivity extends AppCompatActivity {
             getAllProducts();
             mSwipeRefreshLayout.setRefreshing(true);
         });
-
+        notifySeller();
 
     }
 
-    public void checkProductDate() {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Products");
-        reference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    reference.child(Objects.requireNonNull(dataSnapshot.getKey())).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot2) {
-                            String uid = Objects.requireNonNull(snapshot2.child("uid").getValue()).toString();
-                            if (uid.equals(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid())) {
-                                Products products = snapshot2.getValue(Products.class);
-
-                                assert products != null;
-                                String expireDate = products.getTimestamp();
-                                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-
-                                Date date = new Date();
-                                String todayDate = formatter.format(date);
-
-                                int result = todayDate.compareTo(expireDate);
-
-                                if (result >= 0) {
-                                    HashMap<String, Object> hashMap = new HashMap();
-                                    hashMap.put("status", "stop");
-                                    reference.child(products.getName()).updateChildren(hashMap);
-                                    getBiddingData(reference, products);
-
-                                }
-
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
-    private void getBiddingData(DatabaseReference reference, Products products) {
-        reference.child(products.getName()).child("bidding").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        BiddingModal biddingModal = dataSnapshot.getValue(BiddingModal.class);
-                        assert biddingModal != null;
-                        int bid = Integer.parseInt(biddingModal.getBid());
-                        if (bid > max) {
-                            max = bid;
-                            maxUserId = biddingModal.getUid();
-                        }
-                    }
-                }
-
-
-                HashMap<String, Object> map = new HashMap<>();
-                map.put("bid", max);
-                map.put("uid", maxUserId);
-
-                reference.child(products.getName()).child("winner").updateChildren(map);
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
 
     public void getAllProducts() {
         allProducts.clear();
@@ -181,33 +100,13 @@ public class HomeActivity extends AppCompatActivity {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             Products products = dataSnapshot.getValue(Products.class);
-                            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-                            Date dn = new Date();
-                            String formatted = formatter.format(dn);
-
-                            try {
-                                Date today = formatter.parse(formatted);
-                                assert products != null;
-                                Date expires = formatter.parse(Objects.requireNonNull(products.getTimestamp()));
-                                assert today != null;
-                                if (today.after(expires)) {
-                                    //TODO: Notify the seller by sending email of buyer
-                                    FirebaseDatabase.getInstance().getReference().child("Products")
-                                            .child(products.getName()).child("status").setValue("Expired");
-
-                                }
-                                allProducts.add(products);
-                                mAdapter.notifyDataSetChanged();
-                                mSwipeRefreshLayout.setRefreshing(true);
-
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
+                            allProducts.add(products);
+                            mAdapter.notifyDataSetChanged();
+                            mSwipeRefreshLayout.setRefreshing(true);
                         }
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
-
                         }
                     });
                 }
@@ -219,50 +118,50 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-//        ref.keepSynced(true);
-//
-//        Query messageQuery = ref.limitToLast(mCurrentPage * TOTAL_ITEMS_TO_LOAD);
-//
-//
-//        messageQuery.addChildEventListener(new ChildEventListener() {
-//            @Override
-//            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-//
-//                Products products = dataSnapshot.getValue(Products.class);
-//                 allProducts.add(products);
-//                 mAdapter.notifyDataSetChanged();
-//
-//
-//            }
-//
-//            @Override
-//            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-//
-//            }
-//
-//            @Override
-//            public void onChildRemoved(DataSnapshot dataSnapshot) {
-//
-//            }
-//
-//            @Override
-//            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
+    }
 
+    private void notifySeller() {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Products");
+        ref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                for (DataSnapshot dataSnapshot : task.getResult().getChildren()) {
+                    Products products = dataSnapshot.getValue(Products.class);
 
+                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                    Date dn = new Date();
+                    String formatted = formatter.format(dn);
+
+                    try {
+                        Date today = formatter.parse(formatted);
+                        assert products != null;
+                        Date expires = formatter.parse(Objects.requireNonNull(products.getTimestamp()));
+                        assert today != null;
+                        if (today.after(expires) && products.getStatus().equals("running")) {
+                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users")
+                                    .child(products.getUid()).child("products");
+                            String product_id = reference.push().getKey();
+                            assert product_id != null;
+                            reference.child(product_id).setValue(products);
+                            FirebaseDatabase.getInstance().getReference().child("Products")
+                                    .child(products.getName()).child("status").setValue("Expired");
+
+                        }
+                        if (products.getStatus().equals("Paid")) {
+                            DatabaseReference dR = FirebaseDatabase.getInstance().getReference("Products").child(products.getName());
+                            dR.removeValue();
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
         getMenuInflater().inflate(R.menu.bottom_main, menu);
         return true;
     }
@@ -281,7 +180,6 @@ public class HomeActivity extends AppCompatActivity {
                 return true;
 
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -305,13 +203,9 @@ public class HomeActivity extends AppCompatActivity {
             mUserDatabase.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-
                     if (dataSnapshot != null) {
-
                         mUserDatabase.child("online").onDisconnect().setValue(ServerValue.TIMESTAMP);
-
                     }
-
                 }
 
                 @Override
