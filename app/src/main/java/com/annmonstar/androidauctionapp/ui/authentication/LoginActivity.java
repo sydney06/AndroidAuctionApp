@@ -1,10 +1,5 @@
 package com.annmonstar.androidauctionapp.ui.authentication;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -15,8 +10,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.annmonstar.androidauctionapp.ui.HomeActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.annmonstar.androidauctionapp.R;
+import com.annmonstar.androidauctionapp.ui.HomeActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -35,28 +35,30 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mLoginEmail;
     private EditText mLoginPassword;
 
-    private Button mLogin_btn,mSign_up;
+    private Button mLogin_btn, mSign_up;
     private Context mContext;
 
     private ProgressDialog mLoginProgress;
 
     private FirebaseAuth mAuth;
-    AlertDialog dialog_verifying,profile_dialog;
+    AlertDialog dialog_verifying, profile_dialog;
     private ProgressDialog mRegProgress;
     private DatabaseReference mUserDatabase;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        getSupportActionBar().setTitle("Log In");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mAuth = FirebaseAuth.getInstance();
 
-        mLogin_btn=(Button)findViewById(R.id.lg_login);
-        mSign_up=(Button)findViewById(R.id.lg_signup);
+        mLogin_btn = (Button) findViewById(R.id.lg_login);
+        mSign_up = (Button) findViewById(R.id.lg_signup);
 
-        mLoginEmail=(EditText)findViewById(R.id.lg_email);
+        mLoginEmail = (EditText) findViewById(R.id.lg_email);
         mRegProgress = new ProgressDialog(LoginActivity.this);
-        mLoginPassword=(EditText)findViewById(R.id.lg_pass);
+        mLoginPassword = (EditText) findViewById(R.id.lg_pass);
 
         mContext = this;
 
@@ -65,34 +67,20 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                String email=mLoginEmail.getText().toString();
-                String password=mLoginPassword.getText().toString();
+                String email = mLoginEmail.getText().toString();
+                String password = mLoginPassword.getText().toString();
 
 
-//                LayoutInflater inflater = getLayoutInflater();
-//                View alertLayout= inflater.inflate(R.layout.profile_create_dialog,null);
-//                AlertDialog.Builder show = new AlertDialog.Builder(mContext);
-//                show.setView(alertLayout);
-//                show.setCancelable(false);
-//                dialog_verifying = show.create();
-//                dialog_verifying.show();
-
-
-
-                if (email.isEmpty() || password.isEmpty()){
+                if (email.isEmpty() || password.isEmpty()) {
                     Toast.makeText(mContext, "You can't leave fields empty", Toast.LENGTH_SHORT).show();
-                }
-                else {
+                } else {
 
                     mRegProgress.setTitle("Logging in");
-                    mRegProgress.setMessage("Please wait while we create your account !");
+                    mRegProgress.setMessage("Please wait while we log you into your account!");
                     mRegProgress.setCanceledOnTouchOutside(false);
                     mRegProgress.show();
-
-
-                    loginUser(email,password);
+                    loginUser(email, password);
                 }
-
 
 
             }
@@ -101,13 +89,10 @@ public class LoginActivity extends AppCompatActivity {
         mSign_up.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this,RegisterActivity.class));
+                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
 
             }
         });
-
-
-
 
 
         mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
@@ -147,7 +132,7 @@ public class LoginActivity extends AppCompatActivity {
 
                             } else {
                                 Log.e("TAG", "exception=" + Objects.requireNonNull(task.getException()));
-                                Toast.makeText(LoginActivity.this, "Error - " +task.getException().toString(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, "Error - " + task.getException().toString(), Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -158,16 +143,17 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
     @Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
-            Intent intent=new Intent(LoginActivity.this, HomeActivity.class);
+            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
             startActivity(intent);
             finish();
-            Toast.makeText(LoginActivity.this,"Log in success.",Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginActivity.this, "Log in success.", Toast.LENGTH_SHORT).show();
         }
     }
 

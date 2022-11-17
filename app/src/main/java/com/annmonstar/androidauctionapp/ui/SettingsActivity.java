@@ -53,6 +53,8 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        getSupportActionBar().setTitle("Settings");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         profile = (CircleImageView) findViewById(R.id.p_profile);
         username = (TextView) findViewById(R.id.p_name);
         logout = (RelativeLayout) findViewById(R.id.logout);
@@ -62,7 +64,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mRegProgress.setTitle("Logging Out");
-                mRegProgress.setMessage("Please wait while we create your account !");
+                mRegProgress.setMessage("Please wait while we log you out!");
                 mRegProgress.setCanceledOnTouchOutside(false);
                 mRegProgress.show();
 
