@@ -99,7 +99,6 @@ public class AdapterClass extends RecyclerView.Adapter<AdapterClass.Viewholder> 
                 intent.putExtra("uid",products.getUid());
                 intent.putExtra("status",products.getStatus());
                 intent.putExtra("image",imageUri.toString());
-
                 mContext.startActivity(intent);
             }
         });
