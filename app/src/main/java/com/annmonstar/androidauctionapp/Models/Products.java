@@ -1,7 +1,9 @@
 package com.annmonstar.androidauctionapp.Models;
 
+import android.net.Uri;
+
 public class Products {
-    String name,description,days,uid,bid,timestamp,status;
+    private String name,description,days,uid,bid,timestamp,status, mainImage, winner;
 
     public Products(){
 
@@ -23,15 +25,16 @@ public class Products {
         this.status = status;
     }
 
-    public Products(String name, String description, String days, String uid, String bid, String timestamp, String status) {
+    public Products(String name, String description, String days, String uid, String bid, String timestamp, String status, String mainImage, String winner) {
         this.name = name;
         this.description = description;
         this.days = days;
         this.uid = uid;
         this.timestamp = timestamp;
         this.status = status;
-
+        this.winner = winner;
         this.bid = bid;
+        this.mainImage = mainImage;
     }
 
     public String getName() {
@@ -72,5 +75,19 @@ public class Products {
 
     public void setBid(String bid) {
         this.bid = bid;
+    }
+    public String getWinner() {
+        return winner;
+    }
+
+    public void setWinner(String winner) {
+        this.winner = winner;
+    }
+
+    public void setImageUrl(String image){
+        this.mainImage = image;
+    }
+    public  String getMainImageUrl(){
+        return this.mainImage;
     }
 }

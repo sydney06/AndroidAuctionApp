@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:background="#fff"
     android:layout_height="match_parent"
-    tools:context="com.annmonstar.androidauctionapp.MainActivity">
+    tools:context="com.annmonstar.androidauctionapp.ui.MainActivity">
 
     <ImageView
         android:layout_width="match_parent"
@@ -47,6 +47,7 @@
         android:textSize="12dp"
         android:layout_centerHorizontal="true"
         android:textAlignment="center"
+        android:textColor="@color/faint_txt_color"
         android:text="Continue by selecting any of the buttons from below"/>
 
     <LinearLayout
@@ -67,6 +68,7 @@
             android:layout_marginBottom="10dp"
             android:background="@drawable/rect_btn"
             android:textSize="12dp"
+            app:backgroundTint="@null"
             android:layout_height="wrap_content"/>
         <Button
             android:id="@+id/register"
@@ -76,6 +78,7 @@
             android:textSize="12dp"
             android:fontFamily="@font/nunito_bold"
             android:background="@drawable/button3"
+            app:backgroundTint="@null"
             android:layout_height="wrap_content"/>
 
     </LinearLayout>

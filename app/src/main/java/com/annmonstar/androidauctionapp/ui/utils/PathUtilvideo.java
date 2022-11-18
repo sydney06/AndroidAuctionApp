@@ -1,4 +1,4 @@
-package com.annmonstar.androidauctionapp;
+package com.annmonstar.androidauctionapp.ui.utils;
 
 /*Copyright [2020] [name of copyright owner]
 

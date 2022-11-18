@@ -4,9 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.annmonstar.androidauctionapp.RegisterActivity">
-
-
+    android:background="@color/white"
+    tools:context="com.annmonstar.androidauctionapp.ui.authentication.RegisterActivity">
 
 
     <RelativeLayout
@@ -20,19 +19,21 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_marginTop="60dp">
+                android:layout_marginTop="60dp"
+                android:orientation="vertical">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
                     android:text="Create\naccount"
-                    android:textStyle="bold"
-                    android:textSize="25dp"
                     android:textColor="#191919"
-                    android:layout_marginStart="30dp"/>
+                    android:textSize="25dp"
+                    android:textStyle="bold" />
 
                 <EditText
                     android:id="@+id/reg_name"
@@ -57,6 +58,7 @@
                     android:layout_marginStart="40dp"
                     android:layout_marginEnd="40dp"
                     android:background="#696969" />
+
                 <EditText
                     android:id="@+id/reg_email"
                     android:layout_width="match_parent"
@@ -65,11 +67,11 @@
                     android:layout_marginTop="30dp"
                     android:layout_marginEnd="30dp"
                     android:background="@android:color/transparent"
-                    android:hint="E-mail"
-                    android:inputType="textEmailAddress"
                     android:drawableTint="#696969"
-                    android:padding="15dp"
+                    android:hint="E-mail"
                     android:imeOptions="actionNext"
+                    android:inputType="textEmailAddress"
+                    android:padding="15dp"
                     android:textColor="#191919"
                     android:textColorHint="#696969"
                     android:textStyle="bold" />
@@ -80,7 +82,29 @@
                     android:layout_marginStart="40dp"
                     android:layout_marginEnd="40dp"
                     android:background="#696969" />
+                <EditText
+                    android:id="@+id/reg_phone_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:background="@android:color/transparent"
+                    android:drawableTint="#696969"
+                    android:hint="Phone number"
+                    android:imeOptions="actionNext"
+                    android:inputType="phone"
+                    android:padding="15dp"
+                    android:textColor="#191919"
+                    android:textColorHint="#696969"
+                    android:textStyle="bold" />
 
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginEnd="40dp"
+                    android:background="#696969" />
                 <EditText
                     android:id="@+id/reg_pass"
                     android:layout_width="match_parent"
@@ -88,16 +112,16 @@
                     android:layout_marginStart="30dp"
                     android:layout_marginTop="30dp"
                     android:layout_marginEnd="30dp"
-                    android:imeOptions="actionNext"
                     android:background="@android:color/transparent"
-                    android:hint="Password"
-
                     android:drawableTint="#696969"
+                    android:hint="Password"
+                    android:imeOptions="actionNext"
+                    android:inputType="textPassword"
                     android:padding="15dp"
                     android:textColor="#191919"
-                    android:inputType="textPassword"
                     android:textColorHint="#696969"
                     android:textStyle="bold" />
+
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -113,13 +137,13 @@
                     android:layout_marginTop="30dp"
                     android:layout_marginEnd="30dp"
                     android:background="@android:color/transparent"
-                    android:hint="City"
-                    android:inputType="textCapWords"
-
                     android:drawableTint="#696969"
+                    android:hint="City"
+
+                    android:imeOptions="actionDone"
+                    android:inputType="textCapWords"
                     android:padding="15dp"
                     android:textColor="#191919"
-                    android:imeOptions="actionDone"
                     android:textColorHint="#696969"
                     android:textStyle="bold" />
 
@@ -131,16 +155,16 @@
                     android:background="#696969" />
 
 
-
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/nunito_semibold"
                     android:layout_above="@+id/linear"
-                    android:textSize="13dp"
                     android:layout_marginTop="40dp"
+                    android:fontFamily="@font/nunito_semibold"
+                    android:textColor="@color/faint_txt_color"
+                    android:text="Read our Privacy Policy. Tap on Sign up Button to \naccept our Terms of Service"
                     android:textAlignment="center"
-                    android:text="Read our Privacy Policy. Tap on Sign up Button to \naccept our Terms of Service"/>
+                    android:textSize="13dp" />
 
 
                 <Button
@@ -151,12 +175,12 @@
                     android:layout_marginTop="40dp"
                     android:layout_marginEnd="50dp"
                     android:layout_marginBottom="80dp"
-
-                    android:fontFamily="@font/nunito_bold"
                     android:background="@drawable/rect_btn"
+                    android:fontFamily="@font/nunito_bold"
                     android:text="Sign up"
                     android:textColor="#ffffff"
-                    android:textSize="13dp"/>
+                    android:textSize="13dp"
+                    app:backgroundTint="@null" />
             </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>

@@ -39,9 +39,9 @@ import java.util.Map;
 import java.util.Objects;
 
 import id.zelory.compressor.Compressor;
-import com.annmonstar.androidauctionapp.PathUtilvideo;
-import com.annmonstar.androidauctionapp.addProductforBid;
-import com.annmonstar.androidauctionapp.PathUtils;
+import com.annmonstar.androidauctionapp.ui.utils.PathUtilvideo;
+import com.annmonstar.androidauctionapp.ui.addProductforBid;
+import com.annmonstar.androidauctionapp.ui.utils.PathUtils;
 import com.annmonstar.androidauctionapp.R;
 
 public class AllImageAdapte extends RecyclerView.Adapter<AllImageAdapte.Viewholder> {
@@ -64,8 +64,8 @@ public class AllImageAdapte extends RecyclerView.Adapter<AllImageAdapte.Viewhold
     @Override
     public void onBindViewHolder(@NonNull Viewholder holder, int position) {
 
-        pos = position;
-        Uri uri = images.get(position);
+        pos = holder.getLayoutPosition();
+        Uri uri = images.get(holder.getLayoutPosition());
         Glide.with(mContext)
                 .load(uri)
                 .centerCrop()
@@ -75,7 +75,7 @@ public class AllImageAdapte extends RecyclerView.Adapter<AllImageAdapte.Viewhold
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                removeAt(position);
+                removeAt(holder.getLayoutPosition());
             }
         });
 

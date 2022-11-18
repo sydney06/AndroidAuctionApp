@@ -1,4 +1,4 @@
-package com.annmonstar.androidauctionapp;
+package com.annmonstar.androidauctionapp.ui;
 
 import android.content.Context;
 import android.graphics.*;

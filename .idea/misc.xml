@@ -11,6 +11,27 @@
         <entry key="..\:/Android Studio/AndroidAuctionApp/app/src/main/res/layout/my_camp_layout.xml" value="0.33" />
         <entry key="..\:/Android Studio/AndroidAuctionApp/app/src/main/res/layout/product_view_imy_lay.xml" value="0.1598731884057971" />
         <entry key="..\:/Android Studio/AndroidAuctionApp/app/src/main/res/layout/status_bottom_sheet.xml" value="0.25" />
+        <entry key="app/src/main/res/drawable/button3.xml" value="0.2975" />
+        <entry key="app/src/main/res/drawable/half_round.xml" value="0.2975" />
+        <entry key="app/src/main/res/font/yellowtail.xml" value="0.3854166666666667" />
+        <entry key="app/src/main/res/layout/activity_add_productfor_bid.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_home.xml" value="0.35520833333333335" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.35520833333333335" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.35520833333333335" />
+        <entry key="app/src/main/res/layout/activity_my_campaigns.xml" value="0.14444444444444443" />
+        <entry key="app/src/main/res/layout/activity_notifications.xml" value="0.35520833333333335" />
+        <entry key="app/src/main/res/layout/activity_product_info.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_product_information.xml" value="0.14444444444444443" />
+        <entry key="app/src/main/res/layout/activity_settings.xml" value="0.35520833333333335" />
+        <entry key="app/src/main/res/layout/activity_signup.xml" value="0.35520833333333335" />
+        <entry key="app/src/main/res/layout/images_lay.xml" value="0.35520833333333335" />
+        <entry key="app/src/main/res/layout/live_bid.xml" value="0.35520833333333335" />
+        <entry key="app/src/main/res/layout/my_camp_layout.xml" value="0.35520833333333335" />
+        <entry key="app/src/main/res/layout/notification_layout.xml" value="0.35520833333333335" />
+        <entry key="app/src/main/res/layout/product_lay.xml" value="0.14444444444444443" />
+        <entry key="app/src/main/res/layout/product_view_imy_lay.xml" value="0.35520833333333335" />
+        <entry key="app/src/main/res/layout/status_bottom_sheet.xml" value="0.35520833333333335" />
+        <entry key="app/src/main/res/menu/bottom_main.xml" value="0.35520833333333335" />
       </map>
     </option>
   </component>
@@ -19,5 +40,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.14444444444444443" />
+      </ProjectState>
+    </option>
   </component>
 </project>

@@ -1,30 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.annmonstar.androidauctionapp.MyCampaigns">
+    android:background="@drawable/half_round"
+    tools:context="com.annmonstar.androidauctionapp.ui.MyCampaigns">
 
-    <TextView
-        android:id="@+id/txt"
+    <RelativeLayout
+        android:id="@+id/relativeLayout2"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/myCamp"
+            android:layout_height="match_parent"
+            android:layout_margin="8dp"
+            android:layout_width="match_parent"
+            tools:listitem="@layout/my_camp_layout">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/save_report"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity=""
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="10dp"
-        android:fontFamily="@font/nunito_bold"
-        android:text="My Products"
-        android:textColor="#3814BA"
-        android:textSize="18dp" />
+        android:layout_gravity="bottom|end"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginEnd="20dp"
+        android:layout_weight="0"
+        android:background="@drawable/rect_btn"
+        android:paddingStart="10dp"
+        android:paddingEnd="18dp"
+        android:text="Report"
+        android:textSize="12sp"
+        app:backgroundTint="@null"
+        android:textStyle="bold" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/myCamp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/txt"
-        android:elevation="10dp"
-        android:overScrollMode="never" />
-
-</RelativeLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
