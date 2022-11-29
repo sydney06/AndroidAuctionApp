@@ -48,10 +48,13 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -78,7 +81,7 @@ public class ProductInformationActivity extends AppCompatActivity {
     private EditText bidtext;
     private LiveBidding mAdapter2;
     private Button bidBtn;
-
+    private String imageUrl;
     StorageReference mStorage;
 
     @Override
@@ -208,6 +211,11 @@ public class ProductInformationActivity extends AppCompatActivity {
                                 .child(name).child("bid").setValue(b);
                         FirebaseDatabase.getInstance().getReference().child("Products")
                                 .child(name).child("winner").setValue(uid);
+                        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                        Date date = new Date();
+                        String todaysDate = formatter.format(date);
+                        BiddingModal biddingModal = new BiddingModal(b, uid, name, todaysDate, imageUrl);
+                        saveBid(biddingModal);
 
                     } else {
                         Toast.makeText(ProductInformationActivity.this, "Bidding amount must be greater than " + bid, Toast.LENGTH_SHORT).show();
@@ -295,9 +303,9 @@ public class ProductInformationActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (!Objects.requireNonNull(snapshot.child("image0").getValue()).toString().equals("default")){
-                    String url = Objects.requireNonNull(snapshot.child("image0").getValue()).toString();
+                    imageUrl = Objects.requireNonNull(snapshot.child("image0").getValue()).toString();
                     mStorage
-                            .child(url).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                            .child(imageUrl).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Uri> task) {
                                     Log.d("ADAPTER", task.getResult()+"");
@@ -351,6 +359,20 @@ public class ProductInformationActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+    private void saveBid(BiddingModal bid){
+        Random rand = new Random();
+        String bidId = String.format("%06d", rand.nextInt(999999));
+        FirebaseDatabase.getInstance().getReference().child("Users")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("bids").child(bidId).setValue(bid);
+
+    }
+    private void savePayment(BiddingModal bid){
+        Random rand = new Random();
+        String bidId = String.format("%06d", rand.nextInt(999999));
+        FirebaseDatabase.getInstance().getReference().child("Users")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("payments").child(bidId).setValue(bid);
+
     }
 
 
@@ -406,6 +428,11 @@ public class ProductInformationActivity extends AppCompatActivity {
                         startActivity(intent);
                         FirebaseDatabase.getInstance().getReference().child("Products")
                                 .child(name).child("status").setValue("Paid");
+                        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                        Date date = new Date();
+                        String todaysDate = formatter.format(date);
+                        BiddingModal biddingModal = new BiddingModal(amount + "", uid, name, todaysDate, imageUrl);
+                        savePayment(biddingModal);
                         finish();
                     } else {
                         Toast.makeText(getApplicationContext(), response.message(), Toast.LENGTH_SHORT).show();

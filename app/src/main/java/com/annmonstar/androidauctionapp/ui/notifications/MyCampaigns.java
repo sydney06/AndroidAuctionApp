@@ -1,9 +1,8 @@
-package com.annmonstar.androidauctionapp.ui;
+package com.annmonstar.androidauctionapp.ui.notifications;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.pdf.PdfDocument;
@@ -11,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -43,12 +43,11 @@ import java.util.List;
 import java.util.Objects;
 
 public class MyCampaigns extends AppCompatActivity {
+    private static final int PERMISSION_REQUEST_CODE = 200;
     MyCampaignAdapter mAdapter;
     List<Products> myProducts = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private Button saveReport;
-
-    private static final int PERMISSION_REQUEST_CODE = 200;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +118,17 @@ public class MyCampaigns extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void generatePDF() {

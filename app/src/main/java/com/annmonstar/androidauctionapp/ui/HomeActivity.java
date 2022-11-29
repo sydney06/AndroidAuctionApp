@@ -16,6 +16,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.annmonstar.androidauctionapp.Adapter.AdapterClass;
 import com.annmonstar.androidauctionapp.Models.Products;
 import com.annmonstar.androidauctionapp.R;
+import com.annmonstar.androidauctionapp.ui.notifications.MyCampaigns;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomappbar.BottomAppBar;
@@ -168,17 +169,23 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Intent intent;
 
-        switch (item.getItemId()) {
-            case R.id.settings:
-                Intent intent = new Intent(HomeActivity.this, SettingsActivity.class);
-                startActivity(intent);
-                return true;
-            case R.id.mycamp:
-                Intent intent2 = new Intent(HomeActivity.this, MyCampaigns.class);
-                startActivity(intent2);
-                return true;
-
+        if (item.getItemId() == R.id.settings) {
+            intent = new Intent(HomeActivity.this, SettingsActivity.class);
+            startActivity(intent);
+        }
+        if (item.getItemId() == R.id.mycamp) {
+            intent = new Intent(HomeActivity.this, MyCampaigns.class);
+            startActivity(intent);
+        }
+        if (item.getItemId() == R.id.bids) {
+            intent = new Intent(HomeActivity.this, BidsActivity.class);
+            startActivity(intent);
+        }
+        if (item.getItemId() == R.id.payments) {
+            intent = new Intent(HomeActivity.this, PaymentsActivity.class);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
