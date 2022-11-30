@@ -48,10 +48,13 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -59,55 +62,54 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ProductInformationActivity extends AppCompatActivity {
-    private String name, desc, bid, uid, mine, status;
-    private RecyclerView allImageView;
+    private final List<String> imageList = new ArrayList<>();
+    private final List<BiddingModal> biddingList = new ArrayList<>();
+    StorageReference mStorage;
+    private String name;
+    private String bid;
+    private String uid;
+    private String status;
     private pInfo_AllImageView mAdapter;
-    private TextView pname, pdesc, sellername;
+    private TextView pname, pdesc, sellername, biddingStatus;
     private ImageView imageView;
     private TextView rate, sellerbidViewname, sellercity;
     private CircleImageView sellerImage;
-
-    private Button mMakePayment;
     private DarajaApiClient mApiClient;
     private ProgressDialog mProgressDialog;
-
-    private final List<String> imageList = new ArrayList<>();
     private RecyclerView bidView;
-
-    private final List<BiddingModal> biddingList = new ArrayList<>();
     private EditText bidtext;
     private LiveBidding mAdapter2;
     private Button bidBtn;
-
-    StorageReference mStorage;
+    private String imageUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_information);
-        allImageView = (RecyclerView) findViewById(R.id.allImageView);
+        RecyclerView allImageView = findViewById(R.id.allImageView);
 
-        sellername = (TextView) findViewById(R.id.SellerName);
-        sellercity = (TextView) findViewById(R.id.SellerCity);
-        sellerImage = (CircleImageView) findViewById(R.id.sellerProfile);
-        TextView title = (TextView) findViewById(R.id.title);
-        TextView sold = (TextView) findViewById(R.id.sold);
-        LinearLayout biddingLayout = (LinearLayout) findViewById(R.id.bidLayout);
+        sellername = findViewById(R.id.SellerName);
+        sellercity = findViewById(R.id.SellerCity);
+        sellerImage = findViewById(R.id.sellerProfile);
+        TextView title = findViewById(R.id.title);
+        TextView sold = findViewById(R.id.sold);
+        LinearLayout biddingLayout = findViewById(R.id.bidLayout);
 
-        bidBtn = (Button) findViewById(R.id.bidbtn);
-        bidtext = (EditText) findViewById(R.id.bidtxt);
+        bidBtn = findViewById(R.id.bidbtn);
+        bidtext = findViewById(R.id.bidtxt);
+        biddingStatus = findViewById(R.id.status_value);
 
 
-        bidView = (RecyclerView) findViewById(R.id.bidView);
+        bidView = findViewById(R.id.bidView);
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-        imageView = (ImageView) findViewById(R.id.pImage);
-        rate = (TextView) findViewById(R.id.pbid);
-        pname = (TextView) findViewById(R.id.pname);
-        pdesc = (TextView) findViewById(R.id.pdesc);
+        imageView = findViewById(R.id.pImage);
+        rate = findViewById(R.id.pbid);
+        pname = findViewById(R.id.pname);
+        pdesc = findViewById(R.id.pdesc);
 
-        mMakePayment = findViewById(R.id.make_payment);
+        Button mMakePayment = findViewById(R.id.make_payment);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         allImageView.setLayoutManager(linearLayoutManager);
@@ -129,9 +131,10 @@ public class ProductInformationActivity extends AppCompatActivity {
         getData();
         bidStart();
         getBidding();
-        if (status.equals("Expired")){
-            bidBtn.setVisibility(View.GONE);
-            bidtext.setVisibility(View.GONE);
+        if (status.equals("Expired")) {
+            biddingStatus.setText("Expired");
+        }else{
+            biddingStatus.setText("Running");
         }
 
         if (status.equalsIgnoreCase("stop")) {
@@ -181,6 +184,7 @@ public class ProductInformationActivity extends AppCompatActivity {
                     }
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
@@ -208,6 +212,11 @@ public class ProductInformationActivity extends AppCompatActivity {
                                 .child(name).child("bid").setValue(b);
                         FirebaseDatabase.getInstance().getReference().child("Products")
                                 .child(name).child("winner").setValue(uid);
+                        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                        Date date = new Date();
+                        String todaysDate = formatter.format(date);
+                        BiddingModal biddingModal = new BiddingModal(b, uid, name, todaysDate, imageUrl);
+                        saveBid(biddingModal);
 
                     } else {
                         Toast.makeText(ProductInformationActivity.this, "Bidding amount must be greater than " + bid, Toast.LENGTH_SHORT).show();
@@ -280,11 +289,11 @@ public class ProductInformationActivity extends AppCompatActivity {
 
     private void getPreInfo() {
         name = getIntent().getStringExtra("pname");
-        desc = getIntent().getStringExtra("pdesc");
+        String desc = getIntent().getStringExtra("pdesc");
         bid = getIntent().getStringExtra("prate");
         uid = getIntent().getStringExtra("uid");
         status = getIntent().getStringExtra("status");
-        mine = getIntent().getStringExtra("mine");
+        String mine = getIntent().getStringExtra("mine");
 
         // bidNow.setText("View Bidding of Your Product");
 
@@ -294,13 +303,13 @@ public class ProductInformationActivity extends AppCompatActivity {
         FirebaseDatabase.getInstance().getReference().child("Products").child(name).child("Images").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (!Objects.requireNonNull(snapshot.child("image0").getValue()).toString().equals("default")){
-                    String url = Objects.requireNonNull(snapshot.child("image0").getValue()).toString();
+                if (!Objects.requireNonNull(snapshot.child("image0").getValue()).toString().equals("default")) {
+                    imageUrl = Objects.requireNonNull(snapshot.child("image0").getValue()).toString();
                     mStorage
-                            .child(url).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                            .child(imageUrl).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Uri> task) {
-                                    Log.d("ADAPTER", task.getResult()+"");
+                                    Log.d("ADAPTER", task.getResult() + "");
                                     Glide
                                             .with(ProductInformationActivity.this)
                                             .load(task.getResult())
@@ -330,7 +339,6 @@ public class ProductInformationActivity extends AppCompatActivity {
                     Log.e("firebase", "Error getting data", task.getException());
                 } else {
                     if (task.getResult().getValue().toString().equals(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid())) {
-
                         FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("phoneNumber").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<DataSnapshot> task) {
@@ -351,6 +359,22 @@ public class ProductInformationActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void saveBid(BiddingModal bid) {
+        Random rand = new Random();
+        String bidId = String.format("%06d", rand.nextInt(999999));
+        FirebaseDatabase.getInstance().getReference().child("Users")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("bids").child(bidId).setValue(bid);
+
+    }
+
+    private void savePayment(BiddingModal bid) {
+        Random rand = new Random();
+        String bidId = String.format("%06d", rand.nextInt(999999));
+        FirebaseDatabase.getInstance().getReference().child("Users")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("payments").child(bidId).setValue(bid);
+
     }
 
 
@@ -406,6 +430,11 @@ public class ProductInformationActivity extends AppCompatActivity {
                         startActivity(intent);
                         FirebaseDatabase.getInstance().getReference().child("Products")
                                 .child(name).child("status").setValue("Paid");
+                        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                        Date date = new Date();
+                        String todaysDate = formatter.format(date);
+                        BiddingModal biddingModal = new BiddingModal(amount + "", uid, name, todaysDate, imageUrl);
+                        savePayment(biddingModal);
                         finish();
                     } else {
                         Toast.makeText(getApplicationContext(), response.message(), Toast.LENGTH_SHORT).show();

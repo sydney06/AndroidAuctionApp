@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.annmonstar.androidauctionapp.R;
 import com.annmonstar.androidauctionapp.ui.HomeActivity;
+import com.annmonstar.androidauctionapp.ui.admin.AdminActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -28,16 +30,30 @@ import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
+    private final int i = 0;
     AlertDialog dialog_verifying, profile_dialog;
     private EditText mDisplayName, mEmail, mPhoneNumber, mPassword, mCity;
     private Button mCreateBtn;
     private DatabaseReference mDatabase;
-    private final int i = 0;
     //ProgressDialog
     private ProgressDialog mRegProgress;
     //Firebase Auth
     private FirebaseAuth mAuth;
+    private Switch adminSwitch;
 
+    public static boolean verifyPhoneNumber(String phone) {
+
+        if (phone.equals("")) {
+            return false;
+        }
+
+        if (phone.length() != 10 || !phone.startsWith("0")) {
+            String p = phone.replaceFirst("^0", "254");
+            return false;
+        }
+
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +72,7 @@ public class RegisterActivity extends AppCompatActivity {
         mCity = (EditText) findViewById(R.id.reg_city);
         mCreateBtn = (Button) findViewById(R.id.register);
 
+        adminSwitch = findViewById(R.id.admin_switch);
         mCreateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -81,7 +98,7 @@ public class RegisterActivity extends AppCompatActivity {
                     show.setCancelable(false);
                     dialog_verifying = show.create();
                     dialog_verifying.show();*/
-                }else {
+                } else {
                     Toast.makeText(RegisterActivity.this, "Counter check your inputs", Toast.LENGTH_SHORT).show();
                 }
 
@@ -95,73 +112,56 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void register_user(final String display_name, final String email, String password, final String city, final String phoneNumber) {
 
-        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
+        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
 
-                if (task.isSuccessful()) {
-                    // dialog_verifying.dismiss();
-                    FirebaseUser current_user = FirebaseAuth.getInstance().getCurrentUser();
-                    assert current_user != null;
-                    String uid = current_user.getUid();
+            if (task.isSuccessful()) {
+                // dialog_verifying.dismiss();
+                FirebaseUser current_user = FirebaseAuth.getInstance().getCurrentUser();
+                assert current_user != null;
+                String uid = current_user.getUid();
 
-                    Map<String, Object> userMap = new HashMap<>();
-                    userMap.put("name", display_name);
-                    userMap.put("email", email);
-                    userMap.put("phoneNumber", phoneNumber);
-                    userMap.put("city", city);
-                    userMap.put("image", "default");
-                    userMap.put("uid", uid);
+                Map<String, Object> userMap = new HashMap<>();
+                userMap.put("name", display_name);
+                userMap.put("email", email);
+                userMap.put("phoneNumber", phoneNumber);
+                userMap.put("city", city);
+                userMap.put("image", "default");
+                userMap.put("uid", uid);
+                userMap.put("admin", adminSwitch.isChecked());
 
 
-                    mDatabase.child(uid).setValue(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-
-                            if (task.isSuccessful()) {
-
-                                Intent mainIntent = new Intent(RegisterActivity.this, HomeActivity.class);
-                                mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(mainIntent);
-                                finish();
-
+                mDatabase.child(uid).setValue(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Intent mainIntent;
+                        if (task.isSuccessful()) {
+                            if (adminSwitch.isChecked()) {
+                                mainIntent = new Intent(RegisterActivity.this, AdminActivity.class);
+                            } else {
+                                mainIntent = new Intent(RegisterActivity.this, HomeActivity.class);
                             }
-
+                            mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(mainIntent);
+                            finish();
                         }
-                    });
+                    }
+                });
 
 
-                } else {
-
-                    // dialog_verifying.hide();
-                    String task_result = task.getException().getMessage().toString();
-                    mRegProgress.hide();
-                    Toast.makeText(RegisterActivity.this, task_result, Toast.LENGTH_LONG).show();
-
-                }
+            } else {
+                // dialog_verifying.hide();
+                String task_result = task.getException().getMessage().toString();
+                mRegProgress.hide();
+                Toast.makeText(RegisterActivity.this, task_result, Toast.LENGTH_LONG).show();
 
             }
+
         });
 
     }
 
-    public static boolean verifyPhoneNumber(String phone) {
-
-        if (phone.equals("")) {
-            return false;
-        }
-
-        if (phone.length() != 10 || !phone.startsWith("0")) {
-            String p = phone.replaceFirst("^0", "254");
-            return false;
-        }
-
-        return true;
-    }
-
     @Override
     public void onBackPressed() {
-        // TODO Auto-generated method stub
         super.onBackPressed();
 
     }

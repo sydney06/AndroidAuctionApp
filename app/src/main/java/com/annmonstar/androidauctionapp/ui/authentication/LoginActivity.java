@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -17,6 +16,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.annmonstar.androidauctionapp.R;
 import com.annmonstar.androidauctionapp.ui.HomeActivity;
+import com.annmonstar.androidauctionapp.ui.admin.AdminActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -24,24 +24,21 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
+    AlertDialog dialog_verifying, profile_dialog;
     private Toolbar mToolbar;
-
     private EditText mLoginEmail;
     private EditText mLoginPassword;
-
     private Button mLogin_btn, mSign_up;
     private Context mContext;
-
     private ProgressDialog mLoginProgress;
-
     private FirebaseAuth mAuth;
-    AlertDialog dialog_verifying, profile_dialog;
     private ProgressDialog mRegProgress;
     private DatabaseReference mUserDatabase;
 
@@ -51,97 +48,67 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         getSupportActionBar().setTitle("Log In");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         mAuth = FirebaseAuth.getInstance();
 
-        mLogin_btn = (Button) findViewById(R.id.lg_login);
-        mSign_up = (Button) findViewById(R.id.lg_signup);
+        mLogin_btn = findViewById(R.id.lg_login);
+        mSign_up = findViewById(R.id.lg_signup);
 
-        mLoginEmail = (EditText) findViewById(R.id.lg_email);
+        mLoginEmail = findViewById(R.id.lg_email);
         mRegProgress = new ProgressDialog(LoginActivity.this);
-        mLoginPassword = (EditText) findViewById(R.id.lg_pass);
+        mLoginPassword = findViewById(R.id.lg_pass);
 
         mContext = this;
 
 
-        mLogin_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        mLogin_btn.setOnClickListener(view -> {
 
-                String email = mLoginEmail.getText().toString();
-                String password = mLoginPassword.getText().toString();
-
-
-                if (email.isEmpty() || password.isEmpty()) {
-                    Toast.makeText(mContext, "You can't leave fields empty", Toast.LENGTH_SHORT).show();
-                } else {
-
-                    mRegProgress.setTitle("Logging in");
-                    mRegProgress.setMessage("Please wait while we log you into your account!");
-                    mRegProgress.setCanceledOnTouchOutside(false);
-                    mRegProgress.show();
-                    loginUser(email, password);
-                }
-
-
+            String email = mLoginEmail.getText().toString();
+            String password = mLoginPassword.getText().toString();
+            if (email.isEmpty() || password.isEmpty()) {
+                Toast.makeText(mContext, "You can't leave fields empty", Toast.LENGTH_SHORT).show();
+            } else {
+                mRegProgress.setTitle("Logging in");
+                mRegProgress.setMessage("Please wait while we log you into your account!");
+                mRegProgress.setCanceledOnTouchOutside(false);
+                mRegProgress.show();
+                loginUser(email, password);
             }
         });
 
-        mSign_up.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
-
-            }
-        });
-
-
+        mSign_up.setOnClickListener(view -> startActivity(new Intent(LoginActivity.this, RegisterActivity.class)));
         mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
     }
 
     private void loginUser(String email, String password) {
-
-        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-
-                if (task.isSuccessful()) {
-
-                    //Log.e("rg", "onComplete: Failed=" + Objects.requireNonNull(task.getException()).getMessage());
-
-                    String current_user_id = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
-                    FirebaseUser currentUser = mAuth.getCurrentUser();
-
-                    currentUser.getIdToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<GetTokenResult> task) {
-                            if (task.isSuccessful()) {
-                                mUserDatabase.child(current_user_id).child("device_token").setValue(Objects.requireNonNull(task.getResult()).getToken()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-
-                                        // dialog_verifying.cancel();
-                                        //dialog_verifying = null;
-                                        mRegProgress.dismiss();
-                                        Intent mainIntent = new Intent(LoginActivity.this, HomeActivity.class);
-                                        mainIntent.putExtra("id", current_user_id);
-                                        startActivity(mainIntent);
-                                        finish();
-
-                                    }
-                                });
-
-                            } else {
-                                Log.e("TAG", "exception=" + Objects.requireNonNull(task.getException()));
-                                Toast.makeText(LoginActivity.this, "Error - " + task.getException().toString(), Toast.LENGTH_SHORT).show();
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                //Log.e("rg", "onComplete: Failed=" + Objects.requireNonNull(task.getException()).getMessage());
+                String current_user_id = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+                FirebaseUser currentUser = mAuth.getCurrentUser();
+                currentUser.getIdToken(true).addOnCompleteListener(task1 -> {
+                    if (task1.isSuccessful()) {
+                        mUserDatabase.child(current_user_id).child("device_token").setValue(Objects.requireNonNull(task1.getResult()).getToken()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                mRegProgress.dismiss();
+                                getUserDetails(currentUser);
                             }
-                        }
-                    });
+                        });
 
-                }
+                    } else {
+                        Log.e("TAG", "exception=" + Objects.requireNonNull(task1.getException()));
+                        Toast.makeText(LoginActivity.this, "Error - " + task1.getException().toString(), Toast.LENGTH_SHORT).show();
+                    }
+                });
 
+            }else {
+                Toast.makeText(LoginActivity.this, "Error, couldn't sign in. ", Toast.LENGTH_SHORT).show();
 
             }
+
+
+
         });
     }
 
@@ -151,10 +118,7 @@ public class LoginActivity extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
-            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-            startActivity(intent);
-            finish();
-            Toast.makeText(LoginActivity.this, "Log in success.", Toast.LENGTH_SHORT).show();
+            getUserDetails(currentUser);
         }
     }
 
@@ -163,5 +127,27 @@ public class LoginActivity extends AppCompatActivity {
         super.onResume();
         FirebaseDatabase.getInstance().goOnline();
 
+    }
+
+    private void getUserDetails(FirebaseUser currentUser) {
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUser.getUid());
+        userRef.get().addOnCompleteListener(task -> {
+            DataSnapshot snapshot = task.getResult();
+            if (snapshot.exists()) {
+                String type = Objects.requireNonNull(snapshot.child("admin").getValue()).toString();
+                Intent intent;
+                if (type.equals("true")) {
+                    intent = new Intent(LoginActivity.this, AdminActivity.class);
+                } else {
+                    intent = new Intent(LoginActivity.this, HomeActivity.class);
+                }
+                intent.putExtra("id", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                startActivity(intent);
+                Toast.makeText(LoginActivity.this, "Log in success.", Toast.LENGTH_SHORT).show();
+                finish();
+            }else{
+                Toast.makeText(LoginActivity.this, "User does not exists.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

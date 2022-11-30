@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/half_round"
-    tools:context="com.annmonstar.androidauctionapp.ui.notifications.MyCampaigns">
-
+    tools:context=".ui.PaymentsActivity">
     <RelativeLayout
         android:id="@+id/relativeLayout2"
         android:layout_height="match_parent"
@@ -22,11 +21,31 @@
             android:layout_height="match_parent"
             android:layout_margin="8dp"
             android:layout_width="match_parent"
-            tools:listitem="@layout/my_camp_layout">
+            tools:listitem="@layout/payments_item">
 
         </androidx.recyclerview.widget.RecyclerView>
 
     </RelativeLayout>
+
+    <TextView
+        android:id="@+id/no_bids"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:text="No bids made"
+        android:textColor="#191919"
+        android:textSize="25dp"
+        android:textStyle="bold"
+        app:layout_anchor="@+id/relativeLayout2"
+        app:layout_anchorGravity="center" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_anchor="@+id/relativeLayout2"
+        app:layout_anchorGravity="center" />
 
     <Button
         android:id="@+id/save_report"
@@ -45,5 +64,4 @@
         android:textSize="12sp"
         app:backgroundTint="@null"
         android:textStyle="bold" />
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

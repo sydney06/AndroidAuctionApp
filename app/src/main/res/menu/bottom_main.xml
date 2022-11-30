@@ -5,16 +5,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="HardcodedText">
     <item
+        android:id="@+id/payments"
+        android:icon="@drawable/ic_baseline_attach_money_24"
+        android:title="Payments"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/bids"
+        android:icon="@drawable/ic_baseline_auto_awesome_motion_24"
+        android:title="Bids"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/mycamp"
         android:icon="@drawable/ic_baseline_library_books_24"
-        app:showAsAction="always"
-        android:title="My Campaign" />
-
+        android:title="Notifications"
+        app:showAsAction="ifRoom" />
 
 
     <item
         android:id="@+id/settings"
         android:icon="@drawable/ic_baseline_settings_24"
-        app:showAsAction="always"
-        android:title="Settings" />
+        android:title="Settings"
+        app:showAsAction="ifRoom" />
 </menu>

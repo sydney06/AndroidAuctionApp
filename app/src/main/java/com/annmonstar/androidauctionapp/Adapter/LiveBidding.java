@@ -23,7 +23,7 @@ import com.annmonstar.androidauctionapp.Models.BiddingModal;
 import com.annmonstar.androidauctionapp.R;
 
 public class LiveBidding extends RecyclerView.Adapter<LiveBidding.Viewholder> {
-    List<BiddingModal> biddingList = new ArrayList<>();
+    List<BiddingModal> biddingList;
     Context mContext;
     public LiveBidding(ProductInformationActivity productInfoActivity, List<BiddingModal> biddingList) {
         this.mContext = productInfoActivity;
