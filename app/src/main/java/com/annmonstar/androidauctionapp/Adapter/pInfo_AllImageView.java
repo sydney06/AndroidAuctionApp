@@ -99,7 +99,7 @@ public class pInfo_AllImageView extends RecyclerView.Adapter<pInfo_AllImageView.
         private ImageView imageView;
         public Viewholder(@NonNull View itemView) {
             super(itemView);
-            imageView = (ImageView) itemView.findViewById(R.id.imageView);
+            imageView = itemView.findViewById(R.id.imageView);
 
         }
     }

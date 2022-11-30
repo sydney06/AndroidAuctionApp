@@ -134,9 +134,6 @@ public class MyCampaignAdapter extends RecyclerView.Adapter<MyCampaignAdapter.Vi
         return myProducts.size();
     }
 
-    private void deleteProduct() {
-
-    }
 
 
     private void getPData(String url, ImageView holder) {

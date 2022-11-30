@@ -57,10 +57,9 @@ public class BidsAdapter extends RecyclerView.Adapter<BidsAdapter.Viewholder> {
         String message = "You bid Ksh." + biddingModel.getBid() + " for " + biddingModel.getName();
         holder.notificationMessage.setText(message);
         holder.notificationTimestamp.setText(biddingModel.getTimeStamp());
-        getPData(biddingModel.getImage(), holder.notificationIcon);
         mStorage = FirebaseStorage.getInstance().getReference();
+        getPData(biddingModel.getImage(), holder.notificationIcon);
         addCardView(holder.cardView);
-
     }
 
     @Override
@@ -98,4 +97,5 @@ public class BidsAdapter extends RecyclerView.Adapter<BidsAdapter.Viewholder> {
             cardView = itemView.findViewById(R.id.card_view);
         }
     }
+
 }

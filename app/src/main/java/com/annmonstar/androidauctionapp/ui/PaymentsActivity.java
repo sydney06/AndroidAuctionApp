@@ -26,11 +26,9 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.annmonstar.androidauctionapp.Adapter.MyCampaignAdapter;
 import com.annmonstar.androidauctionapp.Adapter.PaymentsAdapter;
 import com.annmonstar.androidauctionapp.Models.Products;
 import com.annmonstar.androidauctionapp.R;
-import com.annmonstar.androidauctionapp.ui.notifications.MyCampaigns;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -54,6 +52,7 @@ public class PaymentsActivity extends AppCompatActivity {
     private Button saveReport;
     private ProgressBar progressBar;
     private TextView noPayments;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,7 +82,13 @@ public class PaymentsActivity extends AppCompatActivity {
             Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
         }
 
-        saveReport.setOnClickListener(v -> generatePDF());
+        saveReport.setOnClickListener(v -> {
+            if (mPayments.isEmpty()){
+                Toast.makeText(this, "Cannot create an empty report.", Toast.LENGTH_SHORT).show();
+            }else{
+                generatePDF();
+            }
+        });
 
     }
 
@@ -97,11 +102,11 @@ public class PaymentsActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
     private void getPayments() {
         mPayments.clear();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("payments");
-
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -111,10 +116,12 @@ public class PaymentsActivity extends AppCompatActivity {
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             Products productModel = snapshot.getValue(Products.class);
                             assert productModel != null;
-                            if (productModel.getUid().equalsIgnoreCase(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid())) {
                                 mPayments.add(productModel);
                                 mAdapter.notifyDataSetChanged();
+                            if (mPayments.isEmpty()) {
+                                noPayments.setVisibility(View.VISIBLE);
                             }
+
                         }
 
                         @Override
@@ -131,9 +138,6 @@ public class PaymentsActivity extends AppCompatActivity {
 
             }
         });
-        if (mPayments.isEmpty()){
-            noPayments.setVisibility(View.VISIBLE);
-        }
         progressBar.setVisibility(View.INVISIBLE);
     }
 

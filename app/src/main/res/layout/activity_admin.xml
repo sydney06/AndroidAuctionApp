@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/half_round"
-    tools:context=".ui.PaymentsActivity">
+    tools:context=".ui.admin.AdminActivity">
     <RelativeLayout
         android:id="@+id/relativeLayout2"
         android:layout_height="match_parent"
@@ -21,20 +21,20 @@
             android:layout_height="match_parent"
             android:layout_margin="8dp"
             android:layout_width="match_parent"
-            tools:listitem="@layout/payments_item">
+            tools:listitem="@layout/admin_layout_item">
 
         </androidx.recyclerview.widget.RecyclerView>
 
     </RelativeLayout>
 
     <TextView
-        android:id="@+id/no_bids"
+        android:id="@+id/no_payments"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
-        android:text="No bids made"
+        android:text="No products available"
         android:textColor="#191919"
-        android:textSize="25dp"
+        android:textSize="25sp"
         android:textStyle="bold"
         app:layout_anchor="@+id/relativeLayout2"
         app:layout_anchorGravity="center" />
@@ -47,21 +47,5 @@
         app:layout_anchor="@+id/relativeLayout2"
         app:layout_anchorGravity="center" />
 
-    <Button
-        android:id="@+id/save_report"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginBottom="30dp"
-        android:layout_marginEnd="20dp"
-        android:layout_weight="0"
-        android:background="@drawable/rect_btn"
-        android:paddingStart="10dp"
-        android:paddingEnd="18dp"
-        android:text="Report"
-        android:textSize="12sp"
-        app:backgroundTint="@null"
-        android:textStyle="bold" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

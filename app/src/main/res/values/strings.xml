@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Android Auction App</string>
+    <string name="admin">Register as Admin</string>
 </resources>

@@ -1,12 +1,23 @@
 package com.annmonstar.androidauctionapp.Models;
 
-import android.net.Uri;
-
 public class Products {
-    private String name,description,days,uid,bid,timestamp,status, mainImage, winner;
+    private String name, description, days, uid, bid, timestamp, status, mainImage, winner, approve;
 
-    public Products(){
+    public Products() {
 
+    }
+
+    public Products(String name, String description, String days, String uid, String bid, String timestamp, String status, String mainImage, String winner, String approve) {
+        this.name = name;
+        this.description = description;
+        this.days = days;
+        this.uid = uid;
+        this.timestamp = timestamp;
+        this.status = status;
+        this.winner = winner;
+        this.bid = bid;
+        this.mainImage = mainImage;
+        this.approve = approve;
     }
 
     public String getTimestamp() {
@@ -23,18 +34,6 @@ public class Products {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public Products(String name, String description, String days, String uid, String bid, String timestamp, String status, String mainImage, String winner) {
-        this.name = name;
-        this.description = description;
-        this.days = days;
-        this.uid = uid;
-        this.timestamp = timestamp;
-        this.status = status;
-        this.winner = winner;
-        this.bid = bid;
-        this.mainImage = mainImage;
     }
 
     public String getName() {
@@ -76,6 +75,7 @@ public class Products {
     public void setBid(String bid) {
         this.bid = bid;
     }
+
     public String getWinner() {
         return winner;
     }
@@ -84,10 +84,19 @@ public class Products {
         this.winner = winner;
     }
 
-    public void setImageUrl(String image){
+    public void setImageUrl(String image) {
         this.mainImage = image;
     }
-    public  String getMainImageUrl(){
+
+    public String getMainImageUrl() {
         return this.mainImage;
+    }
+
+    public String getApprove() {
+        return approve;
+    }
+
+    public void setApprove(String approve) {
+        this.approve = approve;
     }
 }

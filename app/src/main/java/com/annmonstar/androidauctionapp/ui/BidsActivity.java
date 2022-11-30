@@ -62,9 +62,9 @@ public class BidsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         saveReport = findViewById(R.id.save_report);
-        mRecyclerView = (RecyclerView) findViewById(R.id.myCamp);
+        mRecyclerView = findViewById(R.id.myCamp);
         progressBar = findViewById(R.id.progress_bar);
-        noPayments = findViewById(R.id.no_payments);
+        noPayments = findViewById(R.id.no_bids);
         noPayments.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
 
@@ -82,7 +82,14 @@ public class BidsActivity extends AppCompatActivity {
             Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
         }
 
-        saveReport.setOnClickListener(v -> generatePDF());
+        saveReport.setOnClickListener(v -> {
+            if (mBids.isEmpty()){
+                Toast.makeText(this, "Cannot create an empty report.", Toast.LENGTH_SHORT).show();
+            }else{
+                generatePDF();
+            }
+
+        });
 
     }
 
@@ -101,7 +108,6 @@ public class BidsActivity extends AppCompatActivity {
         mBids.clear();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("bids");
-
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -113,6 +119,10 @@ public class BidsActivity extends AppCompatActivity {
                             assert biddingModel != null;
                             mBids.add(biddingModel);
                             mAdapter.notifyDataSetChanged();
+                            if (mBids.isEmpty()) {
+                                noPayments.setVisibility(View.VISIBLE);
+                            }
+                            progressBar.setVisibility(View.INVISIBLE);
 
                         }
 
@@ -123,6 +133,7 @@ public class BidsActivity extends AppCompatActivity {
                     });
                 }
 
+
             }
 
             @Override
@@ -130,10 +141,7 @@ public class BidsActivity extends AppCompatActivity {
 
             }
         });
-        if (mBids.isEmpty()) {
-            noPayments.setVisibility(View.VISIBLE);
-        }
-        progressBar.setVisibility(View.INVISIBLE);
+
     }
 
     private void generatePDF() {
@@ -188,12 +196,10 @@ public class BidsActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0) {
-
                 // after requesting permissions we are showing
                 // users a toast message of permission granted.
                 boolean writeStorage = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                 boolean readStorage = grantResults[1] == PackageManager.PERMISSION_GRANTED;
-
                 if (writeStorage && readStorage) {
                     Toast.makeText(this, "Permission Granted..", Toast.LENGTH_SHORT).show();
                 } else {
